@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import AppRouter from './Config/AppRouter'
-import { LoginProvider } from './hooks/loginhook'
 import { APiProvider } from './hooks/ApiHook'
 import { CartProvider } from './hooks/CartHook'
+import { AuthProvider } from './hooks/AuthHook'
 
 
 function App() {
@@ -12,13 +12,13 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <LoginProvider>
           <APiProvider>
             <CartProvider>
+              <AuthProvider>  
               <AppRouter />
+              </AuthProvider>
             </CartProvider>
           </APiProvider>
-        </LoginProvider>
       </BrowserRouter>
     </>
   )

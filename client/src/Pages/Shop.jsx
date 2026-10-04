@@ -6,7 +6,6 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ApiContext } from '../hooks/ApiHook';
 import { CartContext } from '../hooks/CartHook';
-import { loginContext } from '../hooks/loginhook';
 
 const ShopPage = () => {
   // const [isLoading, setIsLoading] = useState(true);
@@ -22,7 +21,6 @@ const ShopPage = () => {
  
   let {products,loading,error} = useContext(ApiContext)
   let {addToCart} = useContext(CartContext)
-  let {isLogin} = useContext(loginContext)
 
   const filterProduct = products.filter((product) =>
     product.title.toLowerCase().includes(search.toLowerCase()) ||

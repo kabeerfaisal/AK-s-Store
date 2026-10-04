@@ -7,11 +7,13 @@ import Shop from '../Pages/Shop'
 import ProductDetail from '../Pages/ProductDetail'
 import LoginPage from '../Pages/LoginPage'
 import ProtectRouteComponent from '../Components/protectRouteComponent'
+import RegisterPage from '../Pages/registerPage'
 
 function AppRouter() {
   return (
     <Routes>
       <Route path='/login' element={<LoginPage/>}/>
+      <Route path='/register' element={<RegisterPage/>}/>
         <Route path='/' element={<HomePage/>}/>
         <Route path='/shop' element={<Shop/>}/>
       <Route element={<ProtectRouteComponent/>}>

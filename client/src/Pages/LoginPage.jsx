@@ -1,18 +1,26 @@
 import React, { useContext, useState } from 'react';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { FaGithub, FaUserCircle } from "react-icons/fa";
-import { useNavigate } from 'react-router-dom';
-import Navbar from '../Components/NavBar';
-import { loginContext } from '../hooks/loginhook';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../hooks/AuthHook';
 
 function LoginPage() {
-  let context = useContext(loginContext)
   const [showPassword, setShowPassword] = useState(false);
   let Navigate = useNavigate()
+  const {handleLogin, loading, error} = useAuth();
   function guest() {
     Navigate('/')
     console.log("login as Guest Mode")
   }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+    handleLogin({ email, password });
+    localStorage.setItem('email', email);
+  }
+  
 
   return (
     <>
@@ -23,7 +31,7 @@ function LoginPage() {
         <div className="mx-auto w-full max-w-sm">
           {/* Logo Placeholder */}
           <div className="h-10 w-fit p-2 bg-[#8C1515] rounded-lg flex items-center justify-center mb-8 shadow-sm">
-            <span className="text-white font-bold text-xl">Login</span>
+            <span className="text-white font-bold text-xl">AK'S STORE</span>
           </div>
 
           <h2 className="text-3xl font-bold tracking-tight text-[#8C1515]">
@@ -32,9 +40,13 @@ function LoginPage() {
           <p className="mt-2 text-sm text-gray-500">
             Please enter your details to sign in to your account.
           </p>
-
+          {error && (
+            <div className="mt-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs text-center font-medium">
+              {error}
+            </div>
+          )}
           <div className="mt-8">
-            <form className="space-y-5" onSubmit={(e)=>context.login(e)}>
+            <form className="space-y-5" onSubmit={handleSubmit}>
 
               {/* Email Input */}
               <div>
@@ -46,11 +58,12 @@ function LoginPage() {
                     <Mail className="h-5 w-5 text-gray-400" />
                   </div>
                   <input
-                    value={context.inputData}
-                    onChange={(e) => context.InputChange(e)}
+                    // value={context.inputData}
+                    // onChange={(e) => context.InputChange(e)}
                     id="email"
                     name="email"
                     type="email"
+                    required
                     autoComplete="email"
                     className="block w-full rounded-lg border border-[#E8DFD1] py-2.5 pl-10 text-gray-900 placeholder-gray-400 focus:border-[#8C1515] focus:outline-none focus:ring-1 focus:ring-[#8C1515] sm:text-sm transition-shadow"
                     placeholder="you@example.com"
@@ -71,6 +84,7 @@ function LoginPage() {
                     id="password"
                     name="password"
                     type={showPassword ? "text" : "password"}
+                    required
                     autoComplete="current-password"
                     className="block w-full rounded-lg border border-[#E8DFD1] py-2.5 pl-10 pr-10 text-gray-900 placeholder-gray-400 focus:border-[#8C1515] focus:outline-none focus:ring-1 focus:ring-[#8C1515] sm:text-sm transition-shadow"
                     placeholder="••••••••"
@@ -113,9 +127,10 @@ function LoginPage() {
               <div>
                 <button
                   type="submit"
+                  disabled={loading}
                   className="flex w-full justify-center rounded-lg bg-[#8C1515] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#701010] focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#8C1515] transition-all"
                 >
-                  Sign in
+                  {loading ? 'Signing in...' : 'Sign in'}
                 </button>
               </div>
 
@@ -154,9 +169,9 @@ function LoginPage() {
 
             <p className="mt-10 text-center text-sm text-gray-500">
               Don't have an account?{' '}
-              <a href="#sign-up" className="font-semibold leading-6 text-[#D97706] hover:text-[#B45309] transition-colors">
+              <Link to='/register' className="font-semibold leading-6 text-[#D97706] hover:text-[#B45309] transition-colors">
                 Sign up for free
-              </a>
+              </Link>
             </p>
           </div>
         </div>

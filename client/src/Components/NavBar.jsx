@@ -2,14 +2,14 @@ import React, { useContext, useState } from 'react';
 import { FiMenu, FiX, FiShoppingCart, FiUser, FiLogOut } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import CartDrawer from './CartDrawer'; // 1. Import your CartDrawer component
-import { loginContext } from '../hooks/loginhook';
+import CartDrawer from './CartDrawer';
 import { CartContext } from '../hooks/CartHook';
+import { useAuth } from '../hooks/AuthHook';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  let context = useContext(loginContext)
   const recievedEmail = localStorage.getItem('email')
+  const { isLogin, logout } = useAuth();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -50,7 +50,7 @@ const Navbar = () => {
 
             {/* 3. Desktop Actions (User & Cart) */}
             <div className="hidden md:flex items-center space-x-5">
-              {!context.isLogin ? (
+              {isLogin == false ? (
                 <Link
                   to="/login"
                   className="flex items-center space-x-2 text-sm font-semibold text-[#7D0A0A] border border-[#7D0A0A] px-4 py-1.5 rounded-full hover:bg-[#7D0A0A] hover:text-[#EEEEEE] transition duration-200"
@@ -69,7 +69,7 @@ const Navbar = () => {
                     </span>
                   </div>
                   <button
-                    onClick={context.logout}
+                    onClick={logout}
                     className="text-[#7D0A0A] hover:text-[#BF3131] hover:bg-red-100/50 p-1 rounded-full transition duration-200"
                     title="Logout"
                   >
@@ -145,7 +145,7 @@ const Navbar = () => {
               </div>
 
               <div className="pt-3 pb-4 border-t border-[#EAD196]/40 px-4">
-                {!context.isLogin ? (
+                {isLogin == false? (
                   <Link
                     to="/login"
                     onClick={toggleMenu}
@@ -166,7 +166,7 @@ const Navbar = () => {
                     </div>
                     <button
                       onClick={() => {
-                        context.logout();
+                        logout();
                         toggleMenu();
                       }}
                       className="flex items-center space-x-1 text-xs font-semibold text-[#BF3131] hover:bg-red-100/50 px-2.5 py-1.5 rounded-md transition"

@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 import HeroCarousel from '../Components/Carouseltemp';
 import { ApiContext } from '../hooks/ApiHook';
 import { CartContext } from '../hooks/CartHook';
-import { loginContext } from '../hooks/loginhook';
 import RequireLogin from '../Components/RequiredLogin';
 
 const HomePage = () => {
@@ -18,7 +17,6 @@ const HomePage = () => {
   }
   let {products} = useContext(ApiContext)
   let {addToCart} = useContext(CartContext)
-  let {isLogin} = useContext(loginContext)
 
   return (
 <>
