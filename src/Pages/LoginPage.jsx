@@ -113,7 +113,7 @@ function LoginPage() {
               <div>
                 <button
                   type="submit"
-                  className="flex w-full justify-center rounded-lg bg-[#8C1515] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#701010] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8C1515] transition-all"
+                  className="flex w-full justify-center rounded-lg bg-[#8C1515] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-[#701010] focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-[#8C1515] transition-all"
                 >
                   Sign in
                 </button>
@@ -164,7 +164,7 @@ function LoginPage() {
 
       {/* Right Column - Branding */}
       <div className="relative hidden w-0 flex-1 lg:block bg-[#8C1515]">
-        <div className="absolute inset-0 h-full w-full object-cover bg-gradient-to-br from-[#8C1515] via-[#701010] to-[#4A0A0A]"></div>
+        <div className="absolute inset-0 h-full w-full object-cover bg-linear-to-br from-[#8C1515] via-[#701010] to-[#4A0A0A]"></div>
         <div className="absolute inset-0 flex items-center justify-center px-16 xl:px-24">
           <div className="max-w-xl text-white">
             <h1 className="text-4xl font-bold tracking-tight mb-4 leading-tight text-[#FAF8F5]">
