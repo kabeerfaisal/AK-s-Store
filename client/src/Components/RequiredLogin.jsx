@@ -2,8 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaLock } from "react-icons/fa";
 import { motion } from 'framer-motion';
-import Navbar from './NavBar';
-import Footer from './Footer';
+import Navbar from './user/NavBar';
+import Footer from './user/Footer';
 
 const RequireLogin = () => {
     return (

@@ -3,13 +3,13 @@ import { FiMenu, FiX, FiShoppingCart, FiUser, FiLogOut } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import CartDrawer from './CartDrawer';
-import { CartContext } from '../hooks/CartHook';
-import { useAuth } from '../hooks/AuthHook';
+import { CartContext } from '../../hooks/CartHook';
+import { useAuth } from '../../hooks/AuthHook';
 
-const Navbar = () => {
+const UserNavbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const recievedEmail = localStorage.getItem('email')
-  const { isLogin, logout } = useAuth();
+  const { isLogin, logout, token } = useAuth();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -50,7 +50,7 @@ const Navbar = () => {
 
             {/* 3. Desktop Actions (User & Cart) */}
             <div className="hidden md:flex items-center space-x-5">
-              {isLogin == false ? (
+              {isLogin == false || !token || token === null ? (
                 <Link
                   to="/login"
                   className="flex items-center space-x-2 text-sm font-semibold text-[#7D0A0A] border border-[#7D0A0A] px-4 py-1.5 rounded-full hover:bg-[#7D0A0A] hover:text-[#EEEEEE] transition duration-200"
@@ -145,7 +145,7 @@ const Navbar = () => {
               </div>
 
               <div className="pt-3 pb-4 border-t border-[#EAD196]/40 px-4">
-                {isLogin == false? (
+                {isLogin == false || !token || token === null ? (
                   <Link
                     to="/login"
                     onClick={toggleMenu}
@@ -187,4 +187,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default UserNavbar;

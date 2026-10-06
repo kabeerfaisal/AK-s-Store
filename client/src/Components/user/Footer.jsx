@@ -12,7 +12,7 @@ import {
 } from 'react-icons/fi';
 import { TbShieldCheckFilled } from "react-icons/tb";
 
-const Footer = () => {
+const UserFooter = () => {
   return (
     <footer className="bg-[#EEEEEE] border-t border-[#EAD196]/60 text-[#7D0A0A]">
       
@@ -220,4 +220,4 @@ const Footer = () => {
   );
 };
 
-export default Footer;
+export default UserFooter;

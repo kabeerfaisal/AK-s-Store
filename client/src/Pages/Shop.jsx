@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { FiFilter, FiChevronDown, FiShoppingCart, FiX, FiSearch } from 'react-icons/fi';
-import Navbar from '../Components/NavBar';
-import Footer from '../Components/Footer';
+import Navbar from '../Components/user/NavBar';
+import Footer from '../Components/user/Footer';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ApiContext } from '../hooks/ApiHook';
@@ -31,7 +31,7 @@ const ShopPage = () => {
 
   return (
     <>
-    <Navbar />
+    {/* <Navbar /> */}
     <motion.div 
       className="min-h-screen flex flex-col bg-[#FAF8F5]"
       initial={{ opacity: 0, y: -20 }}
@@ -234,7 +234,7 @@ const ShopPage = () => {
         </div>
       </main>
 
-      <Footer />
+      {/* <Footer /> */}
     </motion.div>
     </>
   );

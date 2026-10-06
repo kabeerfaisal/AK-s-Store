@@ -8,19 +8,43 @@ import ProductDetail from '../Pages/ProductDetail'
 import LoginPage from '../Pages/LoginPage'
 import ProtectRouteComponent from '../Components/protectRouteComponent'
 import RegisterPage from '../Pages/registerPage'
+import UserLayout from '../layout/userLayout'
+import AdminHome from '../AdminPages/AdminHome'
+import AdminLayout from '../layout/adminLayout'
 
 function AppRouter() {
   return (
+    // <Routes>
+    //   <Route path='/login' element={<LoginPage/>}/>
+    //   <Route path='/register' element={<RegisterPage/>}/>
+    //     <Route path='/' element={<HomePage/>}/>
+    //     <Route path='/shop' element={<Shop/>}/>
+    //   <Route element={<ProtectRouteComponent/>}>
+    //     <Route path='/about' element={<About/>}/>
+    //     <Route path='/contact' element={<Contact/>}/>
+    //     <Route path='/shop/product-detail/:id' element={<ProductDetail/>}/>
+    //     </Route>
+    // </Routes>
+
     <Routes>
-      <Route path='/login' element={<LoginPage/>}/>
-      <Route path='/register' element={<RegisterPage/>}/>
-        <Route path='/' element={<HomePage/>}/>
-        <Route path='/shop' element={<Shop/>}/>
-      <Route element={<ProtectRouteComponent/>}>
-        <Route path='/about' element={<About/>}/>
-        <Route path='/contact' element={<Contact/>}/>
-        <Route path='/shop/product-detail/:id' element={<ProductDetail/>}/>
+      <Route path='/login' element={<LoginPage />} />
+      <Route path='/register' element={<RegisterPage />} />
+
+      <Route element={<ProtectRouteComponent />}>
+        <Route element={<UserLayout />}>
+          <Route path='/' element={<HomePage />} />
+          <Route path='/shop' element={<Shop />} />
+          <Route path='/about' element={<About />} />
+          <Route path='/contact' element={<Contact />} />
+          <Route path='/shop/product-detail/:id' element={<ProductDetail />} />
         </Route>
+      </Route>
+
+      <Route element={<ProtectRouteComponent />}>
+        <Route element={<AdminLayout />}>
+          <Route path='/admin' element={<AdminHome />} />
+        </Route>
+      </Route>
     </Routes>
   )
 }

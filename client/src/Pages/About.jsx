@@ -1,7 +1,7 @@
 import React from 'react';
 import { FiTarget, FiHeart, FiShield, FiGlobe } from 'react-icons/fi';
-import Navbar from '../Components/NavBar';
-import Footer from '../Components/Footer';
+import Navbar from '../Components/user/NavBar';
+import Footer from '../Components/user/Footer';
 import { motion } from 'framer-motion';
 
 const AboutPage = () => {
@@ -21,7 +21,7 @@ const AboutPage = () => {
 
   return (
     <>
-    <Navbar />
+    {/* <Navbar /> */}
     <motion.div 
       className="min-h-screen flex flex-col bg-[#FAF8F5]"
       initial={{ opacity: 0, y: -20 }}
@@ -130,7 +130,7 @@ const AboutPage = () => {
 
       </main>
 
-      <Footer />
+      {/* <Footer /> */}
     </motion.div>
     </>
   );

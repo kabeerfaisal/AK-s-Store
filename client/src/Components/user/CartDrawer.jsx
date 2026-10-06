@@ -2,7 +2,7 @@ import React, { useCallback, useContext } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiX, FiShoppingCart, FiTrash2, FiPlus, FiMinus, FiArrowRight } from 'react-icons/fi';
-import { CartContext } from '../hooks/CartHook';
+import { CartContext } from '../../hooks/CartHook';
 
 const CartDrawer = ({ isOpen, onClose }) => {
   // let { state } = useLocation();

@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
 import { FiArrowRight, FiShoppingCart } from 'react-icons/fi';
-import Navbar from '../Components/NavBar';
-import Footer from '../Components/Footer';
+import Navbar from '../Components/user/NavBar';
+import Footer from '../Components/user/Footer';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import HeroCarousel from '../Components/Carouseltemp';
+import HeroCarousel from '../Components/user/Carouseltemp';
 import { ApiContext } from '../hooks/ApiHook';
 import { CartContext } from '../hooks/CartHook';
 import RequireLogin from '../Components/RequiredLogin';
@@ -20,7 +20,7 @@ const HomePage = () => {
 
   return (
 <>
-  <Navbar />
+  {/* <Navbar /> */}
   <motion.div
     className="min-h-screen flex flex-col bg-[#1A0505] text-[#E8DFD1] selection:bg-[#8C1515] selection:text-white"
     initial={{ opacity: 0 }}
@@ -162,7 +162,7 @@ const HomePage = () => {
       </section>
     </main>
 
-    <Footer />
+    {/* <Footer /> */}
   </motion.div>
 
 </>

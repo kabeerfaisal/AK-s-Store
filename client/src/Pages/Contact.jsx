@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FiMapPin, FiPhone, FiMail, FiClock, FiSend } from 'react-icons/fi';
-import Navbar from '../Components/NavBar';
-import Footer from '../Components/Footer';
+import Navbar from '../Components/user/NavBar';
+import Footer from '../Components/user/Footer';
 import { motion } from 'framer-motion';
 
 const ContactPage = () => {
@@ -36,7 +36,7 @@ const ContactPage = () => {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <motion.div
         className="min-h-screen flex flex-col bg-[#FAF8F5]"
         initial={{ opacity: 0, y: -30 }}
@@ -224,7 +224,7 @@ const ContactPage = () => {
 
         </main>
 
-        <Footer />
+        {/* <Footer /> */}
       </motion.div>
     </>
   );
