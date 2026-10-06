@@ -25,6 +25,7 @@ export const AuthProvider = ({ children }) => {
         const userData = data.user || {
             name: data.name,
             email: data.email,
+            role: data.role || 'user',
         };
         const tokenData = data.token;
 
@@ -36,6 +37,8 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('email', userData.email);
         if (tokenData) localStorage.setItem('token', tokenData);
         localStorage.setItem('isLogin', 'true');
+        localStorage.setItem('user', JSON.stringify(userData));
+        
     }
     
     const handleLogin = async (credentials) => {

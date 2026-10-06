@@ -11,6 +11,9 @@ import RegisterPage from '../Pages/registerPage'
 import UserLayout from '../layout/userLayout'
 import AdminHome from '../AdminPages/AdminHome'
 import AdminLayout from '../layout/adminLayout'
+import AdminDashboard from '../AdminPages/AdminHome'
+import AdminProtectedRoute from '../Components/AdminProtectedRoutesComponent'
+import AdminProductPage from '../AdminPages/AdminProductPage'
 
 function AppRouter() {
   return (
@@ -40,9 +43,11 @@ function AppRouter() {
         </Route>
       </Route>
 
-      <Route element={<ProtectRouteComponent />}>
+      <Route element={<AdminProtectedRoute/>}>
         <Route element={<AdminLayout />}>
-          <Route path='/admin' element={<AdminHome />} />
+          <Route path='/admin' element={<AdminDashboard />} />
+          <Route path='/admin/products' element={<AdminProductPage />} />
+
         </Route>
       </Route>
     </Routes>

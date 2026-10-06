@@ -7,7 +7,7 @@ import { useAuth } from '../hooks/AuthHook';
 function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   let Navigate = useNavigate()
-  const {handleLogin, loading, error} = useAuth();
+  const {handleLogin, loading, error, user} = useAuth();
   function guest() {
     Navigate('/')
     console.log("login as Guest Mode")
@@ -19,6 +19,7 @@ function LoginPage() {
     const password = e.target.password.value;
     handleLogin({ email, password });
     localStorage.setItem('email', email);
+    console.log('user login', user)
   }
   
 
