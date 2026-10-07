@@ -9,9 +9,11 @@ import HeroCarousel from '../Components/user/Carouseltemp';
 import { ApiContext } from '../hooks/ApiHook';
 import { CartContext } from '../hooks/CartHook';
 import RequireLogin from '../Components/RequiredLogin';
+import { useAuth } from '../hooks/AuthHook';
 
 const HomePage = () => {
   const navigate = useNavigate()
+  const {isLogin} = useAuth()
   function detailPage(data) {
     navigate(`/shop/product-detail/${data.id}`, { state: data });
   }

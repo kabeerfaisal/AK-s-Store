@@ -33,9 +33,9 @@ function AppRouter() {
       <Route path='/login' element={<LoginPage />} />
       <Route path='/register' element={<RegisterPage />} />
 
-      <Route element={<ProtectRouteComponent />}>
         <Route element={<UserLayout />}>
           <Route path='/' element={<HomePage />} />
+      <Route element={<ProtectRouteComponent />}>
           <Route path='/shop' element={<Shop />} />
           <Route path='/about' element={<About />} />
           <Route path='/contact' element={<Contact />} />
