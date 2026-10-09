@@ -1,14 +1,10 @@
 import React, { useContext } from 'react';
-import { FiArrowRight, FiShoppingCart } from 'react-icons/fi';
-import Navbar from '../Components/user/NavBar';
-import Footer from '../Components/user/Footer';
-import { Link } from 'react-router-dom';
+import { FiShoppingCart } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import HeroCarousel from '../Components/user/Carouseltemp';
 import { ApiContext } from '../hooks/ApiHook';
 import { CartContext } from '../hooks/CartHook';
-import RequireLogin from '../Components/RequiredLogin';
 import { useAuth } from '../hooks/AuthHook';
 
 const HomePage = () => {

@@ -3,6 +3,7 @@ import 'dotenv/config'
 import ConnectDB from "./src/config/db.js";
 import authRoutes from "./src/routes/authRoutes.js";
 import cors from "cors";
+import { productRoutes } from "./src/routes/productRoutes.js";
 
 
 
@@ -17,6 +18,10 @@ app.get('/get',(req,res)=>{
 })
 
 app.use('/api/auth',authRoutes)
+app.use('/api', productRoutes )
+// app.use('/api/admin', productRoutes )
+// app.use('/api/admin', productRoutes )
+
 
 
 

@@ -2,7 +2,7 @@ import UserModel from "../models/UserModel.js";
 import bcrypt from "bcrypt";
 import generateToken from "../utils/GenrateTokens.js";
 
-export const registerUser = async (req, res) => {
+export let registerUser = async (req, res) => {
     try {
         const {name, email, password,age} = req.body;
         if (!name || !email || !password || !age) {
