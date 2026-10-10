@@ -5,6 +5,6 @@ import { createProduct, deleteProduct, getAllProducts } from "../controllers/pro
 export const productRoutes = e.Router()
 
 
-productRoutes.get('/', getAllProducts )
+productRoutes.get('/products', getAllProducts )
 productRoutes.post('/admin/post', AuthMiddleware, isAdmin, createProduct )
 productRoutes.post('/admin/delete/:id', AuthMiddleware, isAdmin, deleteProduct )

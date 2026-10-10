@@ -9,5 +9,22 @@ let api = axios.create({
     }
 })
 
+
+api.interceptors.request.use(
+    (config)=>{
+        try {
+            const token = localStorage.getItem('token')
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`
+            }
+            return config
+            
+        } catch (error) {
+           return Promise.reject(error)
+           console.log("catch error:", error) 
+        }
+    }
+)
+
 export default api
 
