@@ -291,7 +291,7 @@ function AdminProducts() {
                         />
                         <div>
                           <div className="flex items-center gap-1.5">
-                            <span className="font-semibold text-gray-900">{item.title}</span>
+                            <span className="font-semibold text-gray-900">{item.title.length > 20? `${item.title.substring(0, 20)}...`: item.title}</span>
                             {item.isFeatured && (
                               <Star className="h-3.5 w-3.5 fill-[#D97706] text-[#D97706]" title="Featured Item" />
                             )}

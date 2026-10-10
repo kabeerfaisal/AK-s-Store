@@ -102,7 +102,7 @@ function AdminSidebar({ isOpen, setIsOpen }) {
             </div>
             <div className="flex flex-col">
               <span className="text-sm font-bold text-gray-900 truncate w-32">{user?.name || 'Administrator'}</span>
-              <span className="text-xs text-gray-500 truncate w-32">admin@system.com</span>
+              <span className="text-xs text-gray-500 truncate w-32">{user?.email}</span>
             </div>
           </div>
 
