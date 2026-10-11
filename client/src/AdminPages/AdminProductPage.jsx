@@ -281,7 +281,7 @@ function AdminProducts() {
                 <tr>
                   <td colSpan="7" className="px-6 py-16 text-center">
                     <div className="flex flex-col items-center justify-center">
-                      <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#8C1515] border-t-indigo-600" />
+                      <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#8C1515] border-t-slate-600" />
                       <p className="mt-4 text-sm text-slate-500">
                         Loading products...
                       </p>
