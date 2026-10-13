@@ -4,6 +4,7 @@ import AppRouter from './Config/AppRouter'
 import { APiProvider } from './hooks/ApiHook'
 import { CartProvider } from './hooks/CartHook'
 import { AuthProvider } from './hooks/AuthHook'
+import { GetProductProvider } from './hooks/GetProductsHook'
 
 
 function App() {
@@ -12,13 +13,15 @@ function App() {
   return (
     <>
       <BrowserRouter>
-          <APiProvider>
-            <CartProvider>
-              <AuthProvider>  
-              <AppRouter />
-              </AuthProvider>
-            </CartProvider>
-          </APiProvider>
+        <APiProvider>
+          <CartProvider>
+            <AuthProvider>
+              <GetProductProvider>
+                <AppRouter />
+              </GetProductProvider>
+            </AuthProvider>
+          </CartProvider>
+        </APiProvider>
       </BrowserRouter>
     </>
   )

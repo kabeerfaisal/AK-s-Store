@@ -2,8 +2,6 @@ import React, { useContext, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiShoppingCart, FiArrowLeft } from 'react-icons/fi';
-import Navbar from '../Components/user/NavBar';
-import Footer from '../Components/user/Footer';
 import { CartContext } from '../hooks/CartHook';
 
 function ProductDetail() {

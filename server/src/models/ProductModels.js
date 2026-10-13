@@ -105,8 +105,8 @@ productSchema.pre('validate', function () {
       .replace(/\s+/g, '-')     
       .replace(/-+/g, '-');       
 
-    const randomHash = Math.random().toString(36).substring(2, 7);
-    this.slug = `${baseSlug}-${randomHash}`;
+    // const randomHash = Math.random().toString(36).substring(2, 7);
+    this.slug = `${baseSlug}`;
   }
 
   // Auto Generate SKU (e.g. Category "Apparel" -> "APP-9B2X71")
@@ -114,8 +114,8 @@ productSchema.pre('validate', function () {
     const categoryPrefix = this.category
       ? this.category.substring(0, 3).toUpperCase()
       : 'PRD';
-    const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-    this.sku = `${categoryPrefix}-${randomCode}`;
+    // const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+    this.sku = `${categoryPrefix}`;
   }
 
 });
