@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { addProduct } from '../../services/Admin_Services/AdminProductServices';
+import React, { useEffect, useState } from 'react'
+import { addProduct, updateProduct } from '../../services/Admin_Services/AdminProductServices';
 import { useGetProduct } from '../../hooks/GetProductsHook';
 import { Loader2, X } from 'lucide-react';
 
@@ -33,6 +33,26 @@ function ProductModal({ isOpen, onCLose, editingProduct }) {
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
 
+    useEffect(() => {
+    if (editingProduct) {
+      setFormData({
+        title: editingProduct.title || '',
+        description: editingProduct.description || '',
+        price: editingProduct.price || '',
+        discountPrice: editingProduct.discountPrice || '',
+        stock: editingProduct.stock ?? '',
+        category: editingProduct.category || 'Apparel',
+        collectionName: editingProduct.collectionName || '',
+        imageUrl: editingProduct.images?.[0]?.url || '',
+        sizes: editingProduct.sizes || [],
+        isFeatured: editingProduct.isFeatured || false,
+      });
+    } else {
+      setFormData(initialForm);
+    }
+    setError('');
+  }, [editingProduct, isOpen]);
+
 
     if (!isOpen) return null
 
@@ -44,22 +64,22 @@ function ProductModal({ isOpen, onCLose, editingProduct }) {
         }));
     };
 
-    const handleEdit = (item) => {
-        setEditingId(item._id);
-        setFormData({
-            title: item.title,
-            description: item.description || '',
-            price: item.price,
-            discountPrice: item.discountPrice || '',
-            stock: item.stock,
-            category: item.category,
-            collectionName: item.collectionName || '',
-            imageUrl: item.images?.[0]?.url || '',
-            sizes: item.sizes || [],
-            isFeatured: item.isFeatured || false,
-        });
-        setIsModalOpen(true);
-    };
+    // const handleEdit = (item) => {
+    //     setEditingId(item._id);
+    //     setFormData({
+    //         title: item.title,
+    //         description: item.description || '',
+    //         price: item.price,
+    //         discountPrice: item.discountPrice || '',
+    //         stock: item.stock,
+    //         category: item.category,
+    //         collectionName: item.collectionName || '',
+    //         imageUrl: item.images?.[0]?.url || '',
+    //         sizes: item.sizes || [],
+    //         isFeatured: item.isFeatured || false,
+    //     });
+    //     setIsModalOpen(true);
+    // };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -93,7 +113,13 @@ function ProductModal({ isOpen, onCLose, editingProduct }) {
                 status: Number(formData.stock) > 0 ? 'active' : 'out_of_stock',
                 images: [{ url: formData.imageUrl || 'https://placeholder.com' }]
             }
-            const response = await addProduct(productData)
+            let response
+            if(editingProduct?._id){
+                response = await updateProduct(editingProduct._id,productData)
+            }else{
+                response = await addProduct(productData)
+
+            }
             console.log(response)
             // closeModal();
             onCLose()

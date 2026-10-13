@@ -101,21 +101,30 @@ productSchema.pre('validate', function () {
     const baseSlug = this.title
       .toLowerCase()
       .trim()
-      .replace(/[^a-z0-9 -]/g, '') 
-      .replace(/\s+/g, '-')     
-      .replace(/-+/g, '-');       
+      .replace(/[^a-z0-9 -]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
 
-    // const randomHash = Math.random().toString(36).substring(2, 7);
-    this.slug = `${baseSlug}`;
+    const randomHash = Math.random().toString(36).substring(2, 7);
+    this.slug = `${baseSlug}-${randomHash}`;
   }
 
   // Auto Generate SKU (e.g. Category "Apparel" -> "APP-9B2X71")
-  if (!this.sku) {
+  if (!this.sku || this.isModified('title') || this.isModified('category')) {
     const categoryPrefix = this.category
       ? this.category.substring(0, 3).toUpperCase()
       : 'PRD';
-    // const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-    this.sku = `${categoryPrefix}`;
+    const namePrefix = this.title
+      ? this.title.trim()
+      .replace(/-/g, ' ')
+      .split(' ')
+      .slice(0, 2)
+      .map(word => word.substring(0, 2).toUpperCase())
+      .join('-')
+      .replace(/-+/g, '-')
+      : 'PROD';
+    const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+    this.sku = `${categoryPrefix}-${namePrefix}-${randomCode}`;
   }
 
 });

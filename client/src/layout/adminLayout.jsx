@@ -19,6 +19,11 @@ const closeModal = () =>{
   setEditingProduct(null)
 }
 
+const openEditProductModal = (product) => {
+    setEditingProduct(product); 
+    setIsAddModalOpen(true);
+  };
+
   return (
     <div className="flex h-screen w-full bg-[#FAF8F5] overflow-hidden relative">
       
@@ -33,7 +38,7 @@ const closeModal = () =>{
         />
 
         <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
-          <Outlet context={{OpenAddProductModal}} />
+          <Outlet context={{OpenAddProductModal, openEditProductModal}} />
         </main>
       </div>
 

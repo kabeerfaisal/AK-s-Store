@@ -11,6 +11,11 @@ export async function getProducts() {
     return response.data
 }
 
+export async function updateProduct(id, data) {
+    let response = await api.post(`/admin/update/${id}`, data)
+    return response.data
+}
+
 export async function deleteProduct(id) {
     let response = await api.post(`/admin/delete/${id}`)
     return response.data

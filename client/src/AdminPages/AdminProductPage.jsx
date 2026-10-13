@@ -14,6 +14,7 @@ import {
 
 import {deleteProduct} from '../services/Admin_Services/AdminProductServices';
 import { useGetProduct } from '../hooks/GetProductsHook';
+import { useOutletContext } from 'react-router-dom';
 
 const CATEGORIES = [
     'All','Apparel', 'Bags',
@@ -21,6 +22,7 @@ const CATEGORIES = [
 ];
 
 function AdminProducts() {
+  const { openEditProductModal } = useOutletContext();
   const {products, loading, fetchProducts, setProducts} = useGetProduct()
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -42,6 +44,8 @@ function AdminProducts() {
       await fetchProducts()
     }
   };
+
+  
 
   return (
     <div className="space-y-6">
@@ -165,7 +169,7 @@ function AdminProducts() {
                       <td className="px-6 py-4 text-right">
                         <div className="flex items-center justify-end gap-1">
                           <button
-                            onClick={() => handleEdit(item)}
+                            onClick={() => openEditProductModal(item)}
                             className="p-1.5 text-gray-400 hover:text-[#8C1515] hover:bg-gray-100 rounded-md transition-colors"
                           >
                             <Edit className="h-4 w-4" />
