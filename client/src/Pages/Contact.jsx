@@ -36,7 +36,6 @@ const ContactPage = () => {
 
   return (
     <>
-      {/* <Navbar /> */}
       <motion.div
         className="min-h-screen flex flex-col bg-[#FAF8F5]"
         initial={{ opacity: 0, y: -30 }}
@@ -44,10 +43,10 @@ const ContactPage = () => {
         transition={{ duration: 0.9, ease: "easeOut" }}
       >
 
-        <main className="flex-grow pt-16">
+        <main className="grow pt-16">
 
           {/* Page Header */}
-          <div className="bg-gradient-to-b from-[#F3EFEA] to-[#FAF8F5] border-b border-[#E8DFD1] py-16 md:py-20 text-center">
+          <div className="bg-linear-to-b from-[#F3EFEA] to-[#FAF8F5] border-b border-[#E8DFD1] py-16 md:py-20 text-center">
             <div className="max-w-400 mx-auto px-4 sm:px-6 lg:px-8">
               <span className="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-[#B45309] uppercase bg-[#FAF0D9] rounded-full border border-[#EAD196]">
                 Support
@@ -223,8 +222,6 @@ const ContactPage = () => {
           </div>
 
         </main>
-
-        {/* <Footer /> */}
       </motion.div>
     </>
   );

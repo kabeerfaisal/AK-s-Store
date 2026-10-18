@@ -64,7 +64,7 @@ const UserNavbar = () => {
                     <div className="w-7 h-7 rounded-full bg-[#7D0A0A] text-[#EEEEEE] flex items-center justify-center font-bold text-xs uppercase">
                       {(recievedEmail || 'G')[0]}
                     </div>
-                    <span className="text-xs font-semibold text-[#7D0A0A] max-w-[120px] truncate">
+                    <span className="text-xs font-semibold text-[#7D0A0A] max-w-30 truncate">
                       {recievedEmail}
                     </span>
                   </div>
@@ -160,7 +160,7 @@ const UserNavbar = () => {
                       <div className="w-8 h-8 rounded-full bg-[#7D0A0A] text-[#EEEEEE] flex items-center justify-center font-bold text-xs uppercase">
                         {(recievedEmail || 'G')[0]}
                       </div>
-                      <span className="text-sm font-medium text-[#7D0A0A] truncate max-w-[180px]">
+                      <span className="text-sm font-medium text-[#7D0A0A] truncate max-w-45">
                         {recievedEmail || 'Guest'}
                       </span>
                     </div>

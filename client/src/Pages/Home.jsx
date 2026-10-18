@@ -40,7 +40,7 @@ const HomePage = () => {
         className="group cursor-pointer rounded-2xl bg-[#1A0505]/60 border border-[#E8DFD1]/15 p-3.5 hover:border-[#F3C97A]/40 transition-all duration-300 hover:shadow-2xl hover:shadow-[#8C1515]/20 hover:-translate-y-1 flex flex-col justify-between"
       >
         {/* Image Container */}
-        <div className="relative aspect-[3/4] w-full rounded-xl overflow-hidden bg-black/50 border border-[#E8DFD1]/10">
+        <div className="relative aspect-3/4 w-full rounded-xl overflow-hidden bg-black/50 border border-[#E8DFD1]/10">
           <img
             src={mainImage}
             alt={product.title}
@@ -191,7 +191,7 @@ const HomePage = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
                   {[1, 2, 3, 4].map((n) => (
                     <div key={n} className="h-96 rounded-2xl bg-[#1A0505]/40 border border-[#E8DFD1]/10 p-3.5 animate-pulse flex flex-col gap-4">
-                      <div className="w-full aspect-[3/4] bg-[#E8DFD1]/10 rounded-xl"></div>
+                      <div className="w-full aspect-3/4 bg-[#E8DFD1]/10 rounded-xl"></div>
                       <div className="h-4 bg-[#E8DFD1]/10 rounded w-2/3"></div>
                       <div className="h-5 bg-[#E8DFD1]/10 rounded w-1/3"></div>
                     </div>
