@@ -42,13 +42,13 @@ useEffect(() => {
     if (isPaused) return;
     const timer = setInterval(() => {
         setIndex((prev) => (prev + 1) % heroSlides.length);
-    }, 4500); // changes every 4.5s
+    }, 4500); 
     return () => clearInterval(timer);
 }, [isPaused, heroSlides.length]);
     return (
         <>
 <div
-    className="relative min-h-[520px] h-[90vh] max-h-[750px] w-full overflow-hidden bg-[#1A0505] text-white border-b border-[#E8DFD1]/20 select-none"
+    className="relative min-h-130 h-[90vh] max-h-187.5 w-full overflow-hidden bg-[#1A0505] text-white border-b border-[#E8DFD1]/20 select-none"
     onMouseEnter={() => setPaused(true)}
     onMouseLeave={() => setPaused(false)}
 >
@@ -69,8 +69,8 @@ useEffect(() => {
             />
             
             {/* Multi-layered dark vignette for high contrast readability */}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#1A0505] via-[#1A0505]/60 to-black/30" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#1A0505]/90 via-[#1A0505]/40 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-[#1A0505] via-[#1A0505]/60 to-black/30" />
+            <div className="absolute inset-0 bg-linear-to-r from-[#1A0505]/90 via-[#1A0505]/40 to-transparent" />
         </motion.div>
     </AnimatePresence>
 
@@ -122,7 +122,7 @@ useEffect(() => {
             >
                 <span className={`w-1 sm:w-1.5 h-1 sm:h-1.5 rounded-full ${i === index ? 'bg-[#F3C97A] animate-pulse' : 'bg-transparent'}`} />
                 <span>0{i + 1}</span>
-                <span className="hidden md:inline uppercase text-[10px] tracking-wider opacity-80 max-w-[90px] truncate">
+                <span className="hidden md:inline uppercase text-[10px] tracking-wider opacity-80 max-w-22.5 truncate">
                     {slide.tag}
                 </span>
             </button>

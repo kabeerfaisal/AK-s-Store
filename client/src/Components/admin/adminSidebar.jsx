@@ -79,7 +79,7 @@ function AdminSidebar({ isOpen, setIsOpen }) {
                 {({ isActive }) => (
                   <>
                     <Icon 
-                      className={`h-5 w-5 flex-shrink-0 transition-colors ${
+                      className={`h-5 w-5 shrink-0 transition-colors ${
                         isActive ? 'text-[#8C1515]' : 'text-gray-400 group-hover:text-gray-600'
                       }`} 
                     />
@@ -110,7 +110,7 @@ function AdminSidebar({ isOpen, setIsOpen }) {
             onClick={() => { logout() }}
             className="group flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-600 transition-all duration-200 hover:bg-red-50 hover:text-[#8C1515]"
           >
-            <LogOut className="h-5 w-5 flex-shrink-0 text-gray-400 group-hover:text-[#8C1515]" />
+            <LogOut className="h-5 w-5 shrink-0 text-gray-400 group-hover:text-[#8C1515]" />
             Sign Out
           </button>
         </div>

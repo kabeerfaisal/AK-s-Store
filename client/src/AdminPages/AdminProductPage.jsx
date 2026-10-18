@@ -13,8 +13,10 @@ import {
 } from 'lucide-react';
 
 import {deleteProduct} from '../services/Admin_Services/AdminProductServices';
-import { useGetProduct } from '../hooks/GetProductsHook';
+// import { useGetProduct } from '../hooks/GetProductsHook';
+
 import { useOutletContext } from 'react-router-dom';
+import GetProductsByFilter from '../hooks/GetProductsByFilter';
 
 const CATEGORIES = [
     'All','Apparel', 'Bags',
@@ -23,7 +25,7 @@ const CATEGORIES = [
 
 function AdminProducts() {
   const { openEditProductModal } = useOutletContext();
-  const {products, loading, fetchProducts, setProducts} = useGetProduct()
+  const {products, loading, fetchProductsData, setProducts} = GetProductsByFilter()
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
 
@@ -41,7 +43,7 @@ function AdminProducts() {
     console.log(response)
     if (response.success) {
       setProducts(products.filter(p => p._id !== id));
-      await fetchProducts()
+      await fetchProductsData()
     }
   };
 

@@ -1,46 +1,57 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { FiFilter, FiChevronDown, FiShoppingCart, FiX, FiSearch, FiShoppingBag } from 'react-icons/fi';
-import Navbar from '../Components/user/NavBar';
-import Footer from '../Components/user/Footer';
+import { FiFilter, FiChevronDown, FiShoppingCart, FiX, FiSearch, FiShoppingBag, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ApiContext } from '../hooks/ApiHook';
 import { CartContext } from '../hooks/CartHook';
-import { useGetProduct } from '../hooks/GetProductsHook';
 import { useAuth } from '../hooks/AuthHook';
+import GetProductsByFilter from '../hooks/GetProductsByFilter';
+
 
 const ShopPage = () => {
-  // const [isLoading, setIsLoading] = useState(true);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
-  // const [fetchProduct, setProduct] = useState([]);
   const Navigate = useNavigate();
   const [search, setSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
   function detailPage(data) {
-    Navigate(`/shop/product-detail/${data.id}`, { state: data });
+    Navigate(`/shop/product-detail/${data._id}`, { state: data });
   }
 
-
-  let { loading, error } = useContext(ApiContext)
-  let { products } = useGetProduct()
+  const {
+    products,
+    loading,
+    error,
+    sortBy,
+    setSortBy,
+    page,
+    setPage,
+    totalPages,
+    totalProducts
+  } = GetProductsByFilter({
+    category: selectedCategory,
+    initialSort: 'featured'
+  });
   let { isLogin } = useAuth()
   let { addToCart } = useContext(CartContext)
 
-  const filterProduct = products.filter((product) =>
+  const filterProduct = products?.filter((product) =>
     product.title.toLowerCase().includes(search.toLowerCase()) ||
-    product.category.toLowerCase().includes(search.toLowerCase())
+   (product.category && product.category.toLowerCase().includes(search.toLowerCase()))
   );
 
-
+  const categoriesList = [
+    'all',
+    'Bags',
+    'Accessories',
+    'Footwear',
+    'Outerwear',
+    'Jewelry'
+  ];
 
   return (
     <>
-      {/* <Navbar /> */}
       <motion.div
         className="min-h-screen flex flex-col bg-[#FAF8F5]"
-      // initial={{ opacity: 0, y: -20 }}
-      // animate={{ opacity: 1, y: 0 }}
-      // transition={{ duration: 0.7, ease: "easeOut" }}
       >
 
         <main className="grow pt-20 pb-16">
@@ -66,11 +77,16 @@ const ShopPage = () => {
                 <div className="flex items-center text-stone-700">
                   <span className="mr-2 text-sm font-medium">Sort by:</span>
                   <div className="relative">
-                    <select className="appearance-none bg-white border border-[#E8DFD1] text-stone-800 py-2 pl-3 pr-8 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#8C1515] cursor-pointer shadow-sm">
-                      <option>Most Popular</option>
-                      <option>Price: Low to High</option>
-                      <option>Price: High to Low</option>
-                      <option>Newest Arrivals</option>
+                    <select value={sortBy}
+                      onChange={(e) => {
+                        setSortBy(e.target.value)
+                        setPage(1)
+                      }}
+                      className="appearance-none bg-white border border-[#E8DFD1] text-stone-800 py-2 pl-3 pr-8 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#8C1515] cursor-pointer shadow-sm">
+                      <option value={"featured"}>Featured</option>
+                      <option value={"price-low"}>Price: Low to High</option>
+                      <option value={"price-high"}>Price: High to Low</option>
+                      <option value={"newest"}>Newest Arrivals</option>
                     </select>
                     <FiChevronDown className="absolute right-2.5 top-3 text-stone-500 pointer-events-none" />
                   </div>
@@ -117,12 +133,23 @@ const ShopPage = () => {
                   <div className="border-t border-[#E8DFD1] pt-5">
                     <h3 className="text-xs font-bold text-[#7A0C0C] mb-3 tracking-wider uppercase">Categories</h3>
                     <div className="space-y-2.5">
-                      {['All Categories', 'Accessories', 'Electronics', 'Fashion', 'Home Decor'].map((cat, idx) => (
-                        <label key={idx} className="flex items-center cursor-pointer group">
-                          <input type="checkbox" className="rounded border-[#E8DFD1] text-[#8C1515] focus:ring-[#8C1515] h-4 w-4 cursor-pointer" />
-                          <span className="ml-3 text-sm text-stone-600 group-hover:text-[#7A0C0C] transition-colors">{cat}</span>
-                        </label>
-                      ))}
+                      {categoriesList.map((cat, idx) => {
+                        const isSelected = selectedCategory.toLowerCase() === cat.toLowerCase();
+                        return (
+                          <button key={idx}
+                            onClick={() => {
+                              setSelectedCategory(cat)
+                              setPage(1)
+                            }}
+                            className={`w-full text-left px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center justify-between ${isSelected
+                              ? 'bg-[#8C1515] text-white font-bold'
+                              : 'text-stone-600 hover:bg-stone-100 hover:text-[#7A0C0C]'
+                              }`}>
+                            <span className="capitalize">{cat === 'all' ? 'All Categories' : cat}</span>
+                            {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-white"></span>}
+                          </button>
+                        )
+                      })}
                     </div>
                   </div>
 
@@ -165,6 +192,12 @@ const ShopPage = () => {
                       transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
                       className="w-10 h-10 border-4 border-[#EAD196] border-t-[#8C1515] rounded-full"
                     />
+                  </div>
+                ) : error ? (
+                  /* Error State */
+                  <div className="text-center py-16 bg-white rounded-2xl border border-red-200 p-8">
+                    <p className="text-sm font-bold text-red-800 mb-2">{error}</p>
+                    <p className="text-xs text-stone-500">Please check your connection and try again.</p>
                   </div>
                 ) : filterProduct.length === 0 ? (
                   <motion.div
@@ -216,8 +249,6 @@ const ShopPage = () => {
                                 </span>
                               )}
                             </div>
-
-                            {/* Product Image - 100% Visible, Centered & Zero Cropping */}
                             <img
                               src={mainImage}
                               alt={products.title}
@@ -293,21 +324,32 @@ const ShopPage = () => {
                 {/* Pagination */}
                 <div className="mt-12 flex justify-center border-t border-[#E8DFD1] pt-8">
                   <nav className="relative z-0 inline-flex rounded-lg shadow-sm -space-x-px overflow-hidden" aria-label="Pagination">
-                    <a href="#" className="relative inline-flex items-center px-3 py-2 border border-[#E8DFD1] bg-white text-sm font-medium text-stone-600 hover:bg-stone-50 transition-colors">
-                      Previous
-                    </a>
-                    <a href="#" aria-current="page" className="z-10 bg-[#8C1515] border-[#8C1515] text-white relative inline-flex items-center px-4 py-2 border text-sm font-bold">
-                      1
-                    </a>
-                    <a href="#" className="bg-white border-[#E8DFD1] text-stone-600 hover:bg-stone-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium transition-colors">
-                      2
-                    </a>
-                    <a href="#" className="bg-white border-[#E8DFD1] text-stone-600 hover:bg-stone-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium transition-colors">
-                      3
-                    </a>
-                    <a href="#" className="relative inline-flex items-center px-3 py-2 border border-[#E8DFD1] bg-white text-sm font-medium text-stone-600 hover:bg-stone-50 transition-colors">
-                      Next
-                    </a>
+                    <button
+                      disabled={page === 1}
+                      onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                      className="inline-flex items-center px-3 py-2 border border-[#E8DFD1] bg-white text-xs font-bold text-stone-600 hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <FiChevronLeft className="h-4 w-4 mr-1" /> Prev
+                    </button>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                      <button
+                        key={pageNum}
+                        onClick={() => setPage(pageNum)}
+                        className={`inline-flex items-center px-4 py-2 border text-xs font-bold transition-colors ${page === pageNum
+                            ? 'z-10 bg-[#8C1515] border-[#8C1515] text-white'
+                            : 'bg-white border-[#E8DFD1] text-stone-600 hover:bg-stone-50'
+                          }`}
+                      >
+                        {pageNum}
+                      </button>
+                    ))}
+                   <button
+                      disabled={page === totalPages}
+                      onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+                      className="inline-flex items-center px-3 py-2 border border-[#E8DFD1] bg-white text-xs font-bold text-stone-600 hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                    >
+                      Next <FiChevronRight className="h-4 w-4 ml-1" />
+                    </button>
                   </nav>
                 </div>
 

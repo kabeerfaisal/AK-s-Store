@@ -5,7 +5,6 @@ import { FiX, FiShoppingCart, FiTrash2, FiPlus, FiMinus, FiArrowRight } from 're
 import { CartContext } from '../../hooks/CartHook';
 
 const CartDrawer = ({ isOpen, onClose }) => {
-  // let { state } = useLocation();
   let { cart, cartSubtotal, cartIncrement, removeProduct, addToCart, cartDecrement } = useContext(CartContext)
 
 
@@ -115,13 +114,6 @@ const CartDrawer = ({ isOpen, onClose }) => {
                     <p className="text-[11px] text-[#EEEEEE]/50">Shipping and taxes calculated at checkout.</p>
 
                     <div className="space-y-2">
-                      {/* <Link
-                      to="/cart"
-                      onClick={onClose}
-                      className="w-full bg-transparent text-[#EAD196] hover:bg-[#EAD196] hover:text-[#120404] py-3 rounded-lg font-bold text-xs uppercase tracking-wider border border-[#EAD196]/60 transition-all text-center block"
-                    >
-                      View Cart
-                    </Link> */}
                       <button
                         onClick={onClose}
                         className="w-full bg-[#BF3131] hover:bg-[#7D0A0A] text-[#EEEEEE] py-3 rounded-lg font-bold text-xs uppercase tracking-wider shadow-lg transition-all flex items-center justify-center space-x-2 border border-[#BF3131]/30"

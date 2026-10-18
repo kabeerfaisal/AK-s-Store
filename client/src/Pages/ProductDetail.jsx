@@ -96,7 +96,7 @@ function ProductDetail() {
             
             {/* Thumbnail Strip */}
             {state.images && state.images.length > 1 && (
-              <div className="flex sm:flex-col gap-3 overflow-x-auto sm:overflow-y-auto max-h-[500px] shrink-0 scrollbar-thin">
+              <div className="flex sm:flex-col gap-3 overflow-x-auto sm:overflow-y-auto max-h-125 shrink-0 scrollbar-thin">
                 {state.images.map((img, idx) => (
                   <button
                     key={idx}
@@ -114,7 +114,7 @@ function ProductDetail() {
             )}
 
             {/* Main Image Stage */}
-            <div className="relative flex-1 aspect-[3/4] max-h-[550px] bg-[#FAF8F5] rounded-xl overflow-hidden border border-[#E8DFD1]/60 flex items-center justify-center p-6 group">
+            <div className="relative flex-1 aspect-3/4 max-h-137.5 bg-[#FAF8F5] rounded-xl overflow-hidden border border-[#E8DFD1]/60 flex items-center justify-center p-6 group">
               <img 
                 src={selectedImage || 'https://via.placeholder.com/500'} 
                 alt={state.title} 

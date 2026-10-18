@@ -1,15 +1,48 @@
 import Product from "../models/ProductModels.js"
 
-
-
-export const getAllProducts = async (req, res) => {
+export const getProductsByFilters = async (req, res) => {
     try {
-        let getproducts = await Product.find()
+        const { id } = req.params
+        console.log(req.params.id)
+        const {includeInactive, sort, category, page = 1, limit = 10 } = req.query
+        const targetCategory = id || category
+        let query = {}
+        if (targetCategory && targetCategory !== 'all' && targetCategory !== 'undefined') {
+            query.category = { $regex: new RegExp(`^${targetCategory}$`, 'i') }
+        }
+        if (includeInactive === 'true' || req.user?.role === 'admin') {
+            // Admin sees all products (Active, Out of Stock, Inactive)
+        } else {
+            // Customers see 'active' and 'out_of_stock' items, but NOT 'inactive' items
+            query.status = { $in: ['active', 'out_of_stock'] };
+        }
+
+        let sortOptions = {}
+        if (sort === 'price-low') {
+            sortOptions.price = 1
+        } else if (sort === 'price-high') {
+            sortOptions.price = -1
+        } else if (sort === 'newest') {
+            sortOptions.createdAt = -1
+        } else {
+            sortOptions = { isFeatured: -1, createdAt: -1 }
+        }
+
+        const skip = (Number(page) - 1) * Number(limit)
+
+        const products = await Product.find(query)
+            .sort(sortOptions)
+            .skip(skip)
+            .limit(Number(limit))
+
+        const totalProducts = await Product.countDocuments(query)
         res.status(200).json({
             success: true,
-            message: "Products retrieved successfully",
-            count: getproducts.length,
-            products: getproducts
+            count: products.length,
+            totalProducts,
+            totalPages: Math.ceil(totalProducts / limit),
+            currentPage: Number(page),
+            products
         })
     } catch (error) {
         res.status(500).json({
@@ -19,7 +52,6 @@ export const getAllProducts = async (req, res) => {
         });
     }
 }
-
 
 export const createProduct = async (req, res) => {
     try {
@@ -48,9 +80,9 @@ export const createProduct = async (req, res) => {
             return res.status(400).json({ message: 'Please provide all required fields' })
         } else if (existingProduct) {
             return res.status(400).json({
-                message: "Yeh product pehle se added hai! Agar stock barhana hai toh inventory update karein."
+                message: "Product Already Exists"
             })
-        }else{
+        } else {
 
             const product = new Product({
                 title,
@@ -65,7 +97,7 @@ export const createProduct = async (req, res) => {
                 colors: colors || [],
                 isFeatured: isFeatured || false
             })
-    
+
             const createdProduct = await product.save()
             res.status(201).json({
                 success: true,
@@ -98,6 +130,7 @@ export const updateProduct = async (req, res) => {
         product.sizes = req.body.sizes || product.sizes;
         product.colors = req.body.colors || product.colors;
         product.isFeatured = req.body.isFeatured !== undefined ? req.body.isFeatured : product.isFeatured;
+        product.status = req.body.status || product.status;
 
         const updatedProduct = await product.save()
         return res.status(201).json({

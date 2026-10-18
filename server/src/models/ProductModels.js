@@ -34,7 +34,8 @@ const productSchema = new mongoose.Schema(
       default: 0,
       validate: {
         validator: function (value) {
-          return value < this.price;
+          if(!value || value === 0) return true;
+          return this.price ? value < this.price : true;
         },
         message: 'Discount price ({VALUE}) must be lower than actual price',
       },
@@ -47,7 +48,7 @@ const productSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['active', 'draft', 'out_of_stock'],
+      enum: ['active', 'draft', 'out_of_stock', 'inactive'],
       default: 'active',
     },
     category: {
@@ -131,7 +132,7 @@ productSchema.pre('validate', function () {
 
 // 2. Auto-update status based on stock level
 productSchema.pre('save', function () {
-  if (this.stock === 0 && this.status !== 'draft') {
+  if (this.stock === 0 && this.status === 'active') {
     this.status = 'out_of_stock';
   } else if (this.stock > 0 && this.status === 'out_of_stock') {
     this.status = 'active';

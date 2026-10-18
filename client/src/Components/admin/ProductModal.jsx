@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { addProduct, updateProduct } from '../../services/Admin_Services/AdminProductServices';
-import { useGetProduct } from '../../hooks/GetProductsHook';
+// import { useGetProduct } from '../../hooks/GetProductsHook';
+
 import { Loader2, X } from 'lucide-react';
+import GetProductsByFilter from '../../hooks/GetProductsByFilter';
 
 // Form State
 const initialForm = {
@@ -28,7 +30,7 @@ const AVAILABLE_SIZES = [
 ];
 
 function ProductModal({ isOpen, onCLose, editingProduct }) {
-    const { fetchProducts } = useGetProduct()
+    const { fetchProductsData } = GetProductsByFilter()
     const [formData, setFormData] = useState(initialForm);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
@@ -64,46 +66,10 @@ function ProductModal({ isOpen, onCLose, editingProduct }) {
         }));
     };
 
-    // const handleEdit = (item) => {
-    //     setEditingId(item._id);
-    //     setFormData({
-    //         title: item.title,
-    //         description: item.description || '',
-    //         price: item.price,
-    //         discountPrice: item.discountPrice || '',
-    //         stock: item.stock,
-    //         category: item.category,
-    //         collectionName: item.collectionName || '',
-    //         imageUrl: item.images?.[0]?.url || '',
-    //         sizes: item.sizes || [],
-    //         isFeatured: item.isFeatured || false,
-    //     });
-    //     setIsModalOpen(true);
-    // };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         setSaving(true)
         setError('')
-        // if (editingId) {
-        //   setProducts(products.map(p => p._id === editingId ? { ...p, ...formData, price: Number(formData.price), stock: Number(formData.stock) } : p));
-        // } else {
-        //   const newItem = {
-        //     _id: String(Date.now()),
-        //     title: formData.title,
-        //     sku: `${formData.category.substring(0, 3).toUpperCase()}-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
-        //     slug: formData.title.toLowerCase().replace(/\s+/g, '-'),
-        //     category: formData.category,
-        //     price: Number(formData.price),
-        //     discountPrice: Number(formData.discountPrice) || 0,
-        //     stock: Number(formData.stock),
-        //     status: Number(formData.stock) > 0 ? 'active' : 'out_of_stock',
-        //     images: [{ url: formData.imageUrl || 'https://via.placeholder.com/150' }],
-        //     sizes: formData.sizes,
-        //     isFeatured: formData.isFeatured,
-        //   };
-        //   setProducts([newItem, ...products]);
-        // }
         try {
             const productData = {
                 ...formData,
@@ -121,11 +87,9 @@ function ProductModal({ isOpen, onCLose, editingProduct }) {
 
             }
             console.log(response)
-            // closeModal();
             onCLose()
             setFormData(initialForm)
-            // setEditingId(null)
-            await fetchProducts()
+            await fetchProductsData()
         } catch (error) {
             setError(error.message);
         } finally {

@@ -59,8 +59,6 @@ function LoginPage() {
                     <Mail className="h-5 w-5 text-gray-400" />
                   </div>
                   <input
-                    // value={context.inputData}
-                    // onChange={(e) => context.InputChange(e)}
                     id="email"
                     name="email"
                     type="email"

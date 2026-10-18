@@ -14,21 +14,10 @@ import AdminLayout from '../layout/adminLayout'
 import AdminDashboard from '../AdminPages/AdminHome'
 import AdminProtectedRoute from '../Components/AdminProtectedRoutesComponent'
 import AdminProductPage from '../AdminPages/AdminProductPage'
+import ProductsByCategory from '../Pages/ProductsByCategory'
 
 function AppRouter() {
   return (
-    // <Routes>
-    //   <Route path='/login' element={<LoginPage/>}/>
-    //   <Route path='/register' element={<RegisterPage/>}/>
-    //     <Route path='/' element={<HomePage/>}/>
-    //     <Route path='/shop' element={<Shop/>}/>
-    //   <Route element={<ProtectRouteComponent/>}>
-    //     <Route path='/about' element={<About/>}/>
-    //     <Route path='/contact' element={<Contact/>}/>
-    //     <Route path='/shop/product-detail/:id' element={<ProductDetail/>}/>
-    //     </Route>
-    // </Routes>
-
     <Routes>
       <Route path='/login' element={<LoginPage />} />
       <Route path='/register' element={<RegisterPage />} />
@@ -37,6 +26,7 @@ function AppRouter() {
           <Route path='/' element={<HomePage />} />
       <Route element={<ProtectRouteComponent />}>
           <Route path='/shop' element={<Shop />} />
+          <Route path='/category/:id' element={<ProductsByCategory />} />
           <Route path='/about' element={<About />} />
           <Route path='/contact' element={<Contact />} />
           <Route path='/shop/product-detail/:id' element={<ProductDetail />} />

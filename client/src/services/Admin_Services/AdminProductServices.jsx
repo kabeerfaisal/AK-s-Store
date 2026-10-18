@@ -10,6 +10,13 @@ export async function getProducts() {
     let response = await api.get('/products')
     return response.data
 }
+export async function getProductsByFilter(categoryId, params = {}) {
+    const url = (!categoryId || categoryId === 'all') 
+    ? '/products' 
+    : `/products/category/${categoryId}`;
+    let response = await api.get(url, {params})
+    return response.data
+}
 
 export async function updateProduct(id, data) {
     let response = await api.post(`/admin/update/${id}`, data)
