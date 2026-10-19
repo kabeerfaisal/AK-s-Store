@@ -30,7 +30,7 @@ const AVAILABLE_SIZES = [
 ];
 
 function ProductModal({ isOpen, onCLose, editingProduct }) {
-    const { fetchProductsData } = GetProductsByFilter()
+    const { refetch } = GetProductsByFilter()
     const [formData, setFormData] = useState(initialForm);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
@@ -89,7 +89,7 @@ function ProductModal({ isOpen, onCLose, editingProduct }) {
             console.log(response)
             onCLose()
             setFormData(initialForm)
-            await fetchProductsData()
+            await refetch()
         } catch (error) {
             setError(error.message);
         } finally {

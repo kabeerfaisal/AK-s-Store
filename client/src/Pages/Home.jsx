@@ -130,9 +130,10 @@ const HomePage = () => {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-              {['Outerwear', 'Denim', 'Dresses', 'Accessories'].map((category, index) => (
+              {['Apparel', 'Bags', 'Jewelry', 'Accessories'].map((category, index) => (
                 <div
                   key={category}
+                  onClick={() => navigate(`/shop?category=${category}`)}
                   className="group relative h-56 sm:h-64 md:h-80 rounded-2xl overflow-hidden cursor-pointer border border-[#E8DFD1]/15 bg-[#1A0505] hover:border-[#F3C97A]/50 transition-all duration-500 shadow-xl"
                 >
                   {/* Category Image with Hover Zoom */}

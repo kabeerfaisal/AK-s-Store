@@ -12,42 +12,38 @@ import {
   Star
 } from 'lucide-react';
 
-import {deleteProduct} from '../services/Admin_Services/AdminProductServices';
+import { deleteProduct } from '../services/Admin_Services/AdminProductServices';
 // import { useGetProduct } from '../hooks/GetProductsHook';
 
 import { useOutletContext } from 'react-router-dom';
 import GetProductsByFilter from '../hooks/GetProductsByFilter';
 
 const CATEGORIES = [
-    'All','Apparel', 'Bags',
-    'Accessories', 'Footwear', 'Jewelry'
+  'All', 'Apparel', 'Bags',
+  'Accessories', 'Footwear', 'Jewelry'
 ];
 
 function AdminProducts() {
   const { openEditProductModal } = useOutletContext();
-  const {products, loading, fetchProductsData, setProducts} = GetProductsByFilter()
-  const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-
-  // Filtered Products Logic
-  const filteredProducts = products.filter((item) => {
-    const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.sku.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'All' || item.category === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const { products, loading, 
+    refetch, searchTerm, setSearchTerm, 
+    page, setPage, totalPages, 
+    totalProducts } = GetProductsByFilter({ includeInactive: true, category: selectedCategory })
 
   // Delete
   const handleDelete = async (id) => {
     const response = await deleteProduct(id)
     console.log(response)
-    if (response.success) {
-      setProducts(products.filter(p => p._id !== id));
-      await fetchProductsData()
+    if (response?.success) {
+      await refetch()
     }
   };
 
-  
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+    setPage(1); // Reset page on category filter change
+  };
 
   return (
     <div className="space-y-6">
@@ -80,7 +76,7 @@ function AdminProducts() {
           <Filter className="h-4 w-4 text-gray-400 shrink-0" />
           <select
             value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
+            onChange={handleCategoryChange}
             className="w-full sm:w-48 rounded-lg bg-[#FAF8F5] border border-[#E8DFD1] py-2 px-3 text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#8C1515]"
           >
             {CATEGORIES.map((cat) => (
@@ -121,8 +117,8 @@ function AdminProducts() {
                   </td>
                 </tr>
               ) :
-                filteredProducts.length > 0 ? (
-                  filteredProducts.map((item) => (
+                products.length > 0 ? (
+                  products.map((item) => (
                     <tr key={item._id} className="hover:bg-gray-50/80 transition-colors">
 
                       {/* Image & Title */}
@@ -160,8 +156,8 @@ function AdminProducts() {
                       {/* Status Badge */}
                       <td className="px-6 py-4">
                         <span className={`px-2.5 py-1 text-xs font-semibold rounded-full border capitalize ${item.status === 'active'
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                            : 'bg-rose-50 text-rose-700 border-rose-200'
+                          ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                          : 'bg-rose-50 text-rose-700 border-rose-200'
                           }`}>
                           {item.status.replace('_', ' ')}
                         </span>
@@ -201,21 +197,31 @@ function AdminProducts() {
 
         {/* Footer */}
         <div className="flex items-center justify-between px-6 py-4 border-t border-[#E8DFD1] bg-[#FAF8F5] text-xs text-gray-500">
-          <span>Showing {filteredProducts.length} items</span>
+          <span>Showing {products.length} of {totalProducts} items (Page {page} of {totalPages})</span>
           <div className="flex items-center gap-2">
-            <button className="p-1.5 rounded border border-[#E8DFD1] bg-white opacity-50" disabled>
+            <button
+              onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+              disabled={page <= 1 || loading}
+              className="p-1.5 rounded border border-[#E8DFD1] bg-white disabled:opacity-40 hover:bg-gray-50 transition-colors"
+            >
               <ChevronLeft className="h-4 w-4" />
             </button>
-            <button className="p-1.5 rounded border border-[#E8DFD1] bg-white opacity-50" disabled>
+            <span className="font-semibold px-2">{page} / {totalPages}</span>
+            <button
+              onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+              disabled={page >= totalPages || loading}
+              className="p-1.5 rounded border border-[#E8DFD1] bg-white disabled:opacity-40 hover:bg-gray-50 transition-colors"
+            >
               <ChevronRight className="h-4 w-4" />
             </button>
           </div>
         </div>
       </div>
+    </div>
 
      
 
-    </div>
+    // </div >
   );
 }
 

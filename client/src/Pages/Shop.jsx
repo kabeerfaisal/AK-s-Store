@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { FiFilter, FiChevronDown, FiShoppingCart, FiX, FiSearch, FiShoppingBag, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CartContext } from '../hooks/CartHook';
 import { useAuth } from '../hooks/AuthHook';
 import GetProductsByFilter from '../hooks/GetProductsByFilter';
@@ -10,9 +10,10 @@ import GetProductsByFilter from '../hooks/GetProductsByFilter';
 const ShopPage = () => {
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const Navigate = useNavigate();
-  const [search, setSearch] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  // const [selectedCategory, setSelectedCategory] = useState('All');
+  const [searchParams, setSearchParams] = useSearchParams()
 
+  const currentCategory = searchParams.get('category') || 'all';
   function detailPage(data) {
     Navigate(`/shop/product-detail/${data._id}`, { state: data });
   }
@@ -26,25 +27,46 @@ const ShopPage = () => {
     page,
     setPage,
     totalPages,
+    searchTerm,
+    setSearchTerm,
     totalProducts
   } = GetProductsByFilter({
-    category: selectedCategory,
-    initialSort: 'featured'
+    initialSort: 'featured',
+    category: currentCategory
   });
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value)
+    setPage(1)
+  }
+
+  const handleCategorySelect = (cat) => {
+    const updatedParams = new URLSearchParams(searchParams);
+    if (cat.toLowerCase() === 'all') {
+      updatedParams.delete('category');
+    } else {
+      updatedParams.set('category', cat);
+    }
+    setSearchParams(updatedParams);
+    setPage(1); // Reset to page 1 on category change
+  };
+
   let { isLogin } = useAuth()
   let { addToCart } = useContext(CartContext)
 
-  const filterProduct = products?.filter((product) =>
-    product.title.toLowerCase().includes(search.toLowerCase()) ||
-   (product.category && product.category.toLowerCase().includes(search.toLowerCase()))
-  );
+  // const filterProduct = products?.filter((product) =>
+  //   product.title.toLowerCase().includes(search.toLowerCase()) ||
+  //   (product.category && product.category.toLowerCase().includes(search.toLowerCase()))
+  // );
+
+  
 
   const categoriesList = [
     'all',
     'Bags',
     'Accessories',
     'Footwear',
-    'Outerwear',
+    'Apparel',
     'Jewelry'
   ];
 
@@ -121,7 +143,8 @@ const ShopPage = () => {
                       </div>
 
                       <input
-                        onChange={(e) => setSearch(e.target.value)}
+                        value={searchTerm}
+                        onChange={handleSearchChange}
                         type="text"
                         placeholder="Type to search..."
                         className="w-full pl-9 pr-4 py-2 bg-white border border-[#E8DFD1] rounded-lg text-sm text-stone-800 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-[#8C1515] transition-all"
@@ -134,14 +157,14 @@ const ShopPage = () => {
                     <h3 className="text-xs font-bold text-[#7A0C0C] mb-3 tracking-wider uppercase">Categories</h3>
                     <div className="space-y-2.5">
                       {categoriesList.map((cat, idx) => {
-                        const isSelected = selectedCategory.toLowerCase() === cat.toLowerCase();
+                        const isSelected = currentCategory.toLowerCase() === cat.toLowerCase();
                         return (
                           <button key={idx}
                             onClick={() => {
-                              setSelectedCategory(cat)
-                              setPage(1)
+                              handleCategorySelect(cat)
                             }}
-                            className={`w-full text-left px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center justify-between ${isSelected
+                            className={`w-full text-left px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center justify-between 
+                              ${isSelected
                               ? 'bg-[#8C1515] text-white font-bold'
                               : 'text-stone-600 hover:bg-stone-100 hover:text-[#7A0C0C]'
                               }`}>
@@ -199,7 +222,7 @@ const ShopPage = () => {
                     <p className="text-sm font-bold text-red-800 mb-2">{error}</p>
                     <p className="text-xs text-stone-500">Please check your connection and try again.</p>
                   </div>
-                ) : filterProduct.length === 0 ? (
+                ) : products.length === 0 ? (
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -215,7 +238,7 @@ const ShopPage = () => {
                   </motion.div>
                 ) : (
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-3 sm:gap-6">
-                    {filterProduct.map((products) => {
+                    {products.map((products) => {
                       // Pricing & Stock Logic
                       const hasDiscount = products.discountPrice && products.discountPrice > 0 && products.discountPrice < products.price;
                       const finalPrice = hasDiscount ? products.discountPrice : products.price;
@@ -336,14 +359,14 @@ const ShopPage = () => {
                         key={pageNum}
                         onClick={() => setPage(pageNum)}
                         className={`inline-flex items-center px-4 py-2 border text-xs font-bold transition-colors ${page === pageNum
-                            ? 'z-10 bg-[#8C1515] border-[#8C1515] text-white'
-                            : 'bg-white border-[#E8DFD1] text-stone-600 hover:bg-stone-50'
+                          ? 'z-10 bg-[#8C1515] border-[#8C1515] text-white'
+                          : 'bg-white border-[#E8DFD1] text-stone-600 hover:bg-stone-50'
                           }`}
                       >
                         {pageNum}
                       </button>
                     ))}
-                   <button
+                    <button
                       disabled={page === totalPages}
                       onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
                       className="inline-flex items-center px-3 py-2 border border-[#E8DFD1] bg-white text-xs font-bold text-stone-600 hover:bg-stone-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"

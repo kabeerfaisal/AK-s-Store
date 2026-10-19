@@ -4,12 +4,28 @@ export const getProductsByFilters = async (req, res) => {
     try {
         const { id } = req.params
         console.log(req.params.id)
-        const {includeInactive, sort, category, page = 1, limit = 10 } = req.query
-        const targetCategory = id || category
+        const {includeInactive, sort, category, search, page = 1, limit = 10 } = req.query
+        const targetCategory = id || category || 'all'
         let query = {}
-        if (targetCategory && targetCategory !== 'all' && targetCategory !== 'undefined') {
-            query.category = { $regex: new RegExp(`^${targetCategory}$`, 'i') }
+
+       const cleanSearch = (search && search !== 'undefined') ? String(search).trim() : '';
+        if (cleanSearch !== '') {
+            query.$or = [
+                { title: { $regex: cleanSearch,$options: 'i' } },
+                { category: { $regex: cleanSearch,$options: 'i' } },
+                { sku: { $regex: cleanSearch,$options: 'i' } }
+            ];
         }
+
+
+       const isAllCategory = !targetCategory || 
+                              String(targetCategory).toLowerCase() === 'all' || 
+                              targetCategory === 'undefined';
+
+        if (!isAllCategory) {
+            query.category = { $regex: new RegExp(`^${targetCategory}$`, 'i') };
+        }
+
         if (includeInactive === 'true' || req.user?.role === 'admin') {
             // Admin sees all products (Active, Out of Stock, Inactive)
         } else {
@@ -34,8 +50,10 @@ export const getProductsByFilters = async (req, res) => {
             .sort(sortOptions)
             .skip(skip)
             .limit(Number(limit))
+            .lean()
 
         const totalProducts = await Product.countDocuments(query)
+
         res.status(200).json({
             success: true,
             count: products.length,
