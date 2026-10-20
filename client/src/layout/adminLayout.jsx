@@ -9,6 +9,7 @@ function AdminLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [editingProduct, setEditingProduct] = useState(null);
+  const [refetchHandler, setRefetchHandler] = useState(null);
 
   const OpenAddProductModal = () =>{
     setEditingProduct(null)
@@ -38,7 +39,7 @@ const openEditProductModal = (product) => {
         />
 
         <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
-          <Outlet context={{OpenAddProductModal, openEditProductModal}} />
+          <Outlet context={{OpenAddProductModal, openEditProductModal, setRefetchHandler}} />
         </main>
       </div>
 
@@ -46,6 +47,7 @@ const openEditProductModal = (product) => {
       isOpen={isAddModalOpen}
       onCLose={closeModal}
       editingProduct={editingProduct}
+      onSuccess={refetchHandler}
       />
       
     </div>

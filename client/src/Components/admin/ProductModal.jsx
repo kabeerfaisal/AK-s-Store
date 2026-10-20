@@ -29,31 +29,31 @@ const AVAILABLE_SIZES = [
     'XL', 'XXL', 'Standard'
 ];
 
-function ProductModal({ isOpen, onCLose, editingProduct }) {
-    const { refetch } = GetProductsByFilter()
+function ProductModal({ isOpen, onCLose, editingProduct, onSuccess }) {
+    // const { refetch } = GetProductsByFilter()
     const [formData, setFormData] = useState(initialForm);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
 
     useEffect(() => {
-    if (editingProduct) {
-      setFormData({
-        title: editingProduct.title || '',
-        description: editingProduct.description || '',
-        price: editingProduct.price || '',
-        discountPrice: editingProduct.discountPrice || '',
-        stock: editingProduct.stock ?? '',
-        category: editingProduct.category || 'Apparel',
-        collectionName: editingProduct.collectionName || '',
-        imageUrl: editingProduct.images?.[0]?.url || '',
-        sizes: editingProduct.sizes || [],
-        isFeatured: editingProduct.isFeatured || false,
-      });
-    } else {
-      setFormData(initialForm);
-    }
-    setError('');
-  }, [editingProduct, isOpen]);
+        if (editingProduct) {
+            setFormData({
+                title: editingProduct.title || '',
+                description: editingProduct.description || '',
+                price: editingProduct.price || '',
+                discountPrice: editingProduct.discountPrice || '',
+                stock: editingProduct.stock ?? '',
+                category: editingProduct.category || 'Apparel',
+                collectionName: editingProduct.collectionName || '',
+                imageUrl: editingProduct.images?.[0]?.url || '',
+                sizes: editingProduct.sizes || [],
+                isFeatured: editingProduct.isFeatured || false,
+            });
+        } else {
+            setFormData(initialForm);
+        }
+        setError('');
+    }, [editingProduct, isOpen]);
 
 
     if (!isOpen) return null
@@ -80,16 +80,26 @@ function ProductModal({ isOpen, onCLose, editingProduct }) {
                 images: [{ url: formData.imageUrl || 'https://placeholder.com' }]
             }
             let response
-            if(editingProduct?._id){
-                response = await updateProduct(editingProduct._id,productData)
-            }else{
+            if (editingProduct?._id) {
+                response = await updateProduct(editingProduct._id, productData)
+            } else {
                 response = await addProduct(productData)
 
             }
-            console.log(response)
-            onCLose()
-            setFormData(initialForm)
-            await refetch()
+
+            if (response?.success || response) {
+                onCLose();
+                setFormData(initialForm);
+                // 🔥 Call parent refetch to update table without page reload
+                if (typeof onSuccess === 'function') {
+                    await onSuccess();
+                }
+            }
+
+            // console.log(response)
+            // onCLose()
+            // setFormData(initialForm)
+            // await refetch()
         } catch (error) {
             setError(error.message);
         } finally {

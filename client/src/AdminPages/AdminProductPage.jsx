@@ -24,11 +24,11 @@ const CATEGORIES = [
 ];
 
 function AdminProducts() {
-  const { openEditProductModal } = useOutletContext();
+  const { openEditProductModal, setRefetchHandler } = useOutletContext();
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const { products, loading, 
-    refetch, searchTerm, setSearchTerm, 
-    page, setPage, totalPages, 
+  const { products, loading,
+    refetch, searchTerm, setSearchTerm,
+    page, setPage, totalPages,
     totalProducts } = GetProductsByFilter({ includeInactive: true, category: selectedCategory })
 
   // Delete
@@ -44,6 +44,12 @@ function AdminProducts() {
     setSelectedCategory(e.target.value);
     setPage(1); // Reset page on category filter change
   };
+
+  useEffect(() => {
+    if (setRefetchHandler) {
+      setRefetchHandler(() => refetch);
+    }
+  }, [refetch, setRefetchHandler])
 
   return (
     <div className="space-y-6">
@@ -100,6 +106,7 @@ function AdminProducts() {
                 <th className="px-6 py-4 font-semibold">Category</th>
                 <th className="px-6 py-4 font-semibold">Price</th>
                 <th className="px-6 py-4 font-semibold">Stock</th>
+                <th className="px-6 py-4 font-semibold">Description</th>
                 <th className="px-6 py-4 font-semibold">Status</th>
                 <th className="px-6 py-4 font-semibold text-right">Actions</th>
               </tr>
@@ -148,10 +155,33 @@ function AdminProducts() {
                       <td className="px-6 py-4 text-gray-600">{item.category}</td>
 
                       {/* Price */}
-                      <td className="px-6 py-4 font-semibold text-gray-900">${item.price.toLocaleString()}</td>
+                      <td className="px-6 py-4">
+                        <div className="flex flex-col justify-center">
+                          {item.discountPrice && item.discountPrice > 0 && item.discountPrice < item.price ? (
+                            <>
+                              {/* Discounted Price */}
+                              <span className="font-semibold text-[#8C1515]">
+                                ${item.discountPrice.toLocaleString()}
+                              </span>
+                              {/* Original Price (Crossed Out) */}
+                              <span className="text-xs text-gray-400 line-through">
+                                ${item.price?.toLocaleString()}
+                              </span>
+                            </>
+                          ) : (
+                            /* Standard Price */
+                            <span className="font-semibold text-gray-900">
+                              ${item.price?.toLocaleString()}
+                            </span>
+                          )}
+                        </div>
+                      </td>
 
                       {/* Stock */}
                       <td className="px-6 py-4 text-gray-600">{item.stock} units</td>
+
+                      {/* Description */}
+                      <td className="px-6 py-4 text-gray-600 max-w-1 truncate">{item.description}</td>
 
                       {/* Status Badge */}
                       <td className="px-6 py-4">
@@ -219,7 +249,7 @@ function AdminProducts() {
       </div>
     </div>
 
-     
+
 
     // </div >
   );

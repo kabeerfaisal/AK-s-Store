@@ -14,6 +14,7 @@ const ShopPage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
 
   const currentCategory = searchParams.get('category') || 'all';
+  
   function detailPage(data) {
     Navigate(`/shop/product-detail/${data._id}`, { state: data });
   }
