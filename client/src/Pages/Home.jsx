@@ -52,11 +52,11 @@ const HomePage = () => {
             <span className="px-2.5 py-1 rounded-md text-[10px] font-mono uppercase tracking-wider bg-[#1A0505]/80 backdrop-blur-md border border-[#E8DFD1]/20 text-[#F3C97A]">
               {product.category || 'Collection'}
             </span>
-            {hasDiscount && (
+            {hasDiscount ? (
               <span className="px-2.5 py-1 rounded-md text-[10px] font-mono uppercase tracking-wider bg-[#8C1515] text-white">
                 Sale
               </span>
-            )}
+            ) : null}
           </div>
 
           {/* Quick Add to Cart Button */}
@@ -85,11 +85,11 @@ const HomePage = () => {
               <p className="text-sm sm:text-base font-serif font-semibold text-[#F3C97A]">
                 PKR {finalPrice?.toLocaleString()}
               </p>
-              {hasDiscount && (
+              {hasDiscount ? (
                 <p className="text-xs text-stone-400 line-through">
                   PKR {product.price?.toLocaleString()}
                 </p>
-              )}
+              ): null}
             </div>
             <span className="text-[11px] font-mono text-[#E8DFD1]/50 uppercase tracking-widest group-hover:text-white transition-colors">
               View Item →

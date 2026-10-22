@@ -1,26 +1,60 @@
+import mongoose from "mongoose";
 import Product from "../models/ProductModels.js"
+
+export const getProductById = async (req, res) => {
+    try {
+        const { id } = req.params
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid product ID format'
+            })
+        }
+        const product = await Product.findById(id).lean()
+        
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: 'Product not found'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            product
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Server Error: Unable to fetch product',
+            error: error.message
+        });
+    }
+}
 
 export const getProductsByFilters = async (req, res) => {
     try {
         const { id } = req.params
         console.log(req.params.id)
-        const {includeInactive, sort, category, search, page = 1, limit = 10 } = req.query
+        const { includeInactive, sort, category, search, page = 1, limit = 10 } = req.query
         const targetCategory = id || category || 'all'
         let query = {}
 
-       const cleanSearch = (search && search !== 'undefined') ? String(search).trim() : '';
+        const cleanSearch = (search && search !== 'undefined') ? String(search).trim() : '';
         if (cleanSearch !== '') {
             query.$or = [
-                { title: { $regex: cleanSearch,$options: 'i' } },
-                { category: { $regex: cleanSearch,$options: 'i' } },
-                { sku: { $regex: cleanSearch,$options: 'i' } }
+                { title: { $regex: cleanSearch, $options: 'i' } },
+                { category: { $regex: cleanSearch, $options: 'i' } },
+                { sku: { $regex: cleanSearch, $options: 'i' } }
             ];
         }
 
 
-       const isAllCategory = !targetCategory || 
-                              String(targetCategory).toLowerCase() === 'all' || 
-                              targetCategory === 'undefined';
+        const isAllCategory = !targetCategory ||
+            String(targetCategory).toLowerCase() === 'all' ||
+            targetCategory === 'undefined';
 
         if (!isAllCategory) {
             query.category = { $regex: new RegExp(`^${targetCategory}$`, 'i') };

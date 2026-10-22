@@ -10,7 +10,6 @@ import GetProductsByFilter from '../hooks/GetProductsByFilter';
 const ShopPage = () => {
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const Navigate = useNavigate();
-  // const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchParams, setSearchParams] = useSearchParams()
 
   const currentCategory = searchParams.get('category') || 'all';
@@ -331,11 +330,11 @@ const ShopPage = () => {
                               <span className="text-sm sm:text-base font-extrabold text-[#8C1515]">
                                 PKR {finalPrice?.toLocaleString()}
                               </span>
-                              {hasDiscount && (
+                              {hasDiscount ? (
                                 <span className="text-xs text-stone-400 line-through font-normal">
                                   PKR {products.price?.toLocaleString()}
                                 </span>
-                              )}
+                              ):null}
                             </div>
                           </div>
 
@@ -382,8 +381,6 @@ const ShopPage = () => {
 
           </div>
         </main>
-
-        {/* <Footer /> */}
       </motion.div>
     </>
   );
