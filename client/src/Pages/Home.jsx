@@ -6,6 +6,8 @@ import HeroCarousel from '../Components/user/Carouseltemp';
 import { CartContext } from '../hooks/CartHook';
 import { useAuth } from '../hooks/AuthHook';
 import GetProductsByFilter from '../hooks/GetProductsByFilter';
+import ProductCard from '../Components/user/productCard';
+// import ProductCard from '../Components/user/productCard';
 
 const HomePage = () => {
   const navigate = useNavigate()
@@ -25,80 +27,80 @@ const HomePage = () => {
   })
 
   // reusable Product card component
-  const renderProductCard = (product) => {
-    const hasDiscount = product.discountPrice && product.discountPrice > 0 && product.discountPrice < product.price;
-    const finalPrice = hasDiscount ? product.discountPrice : product.price;
+  // const renderProductCard = (product) => {
+  //   const hasDiscount = product.discountPrice && product.discountPrice > 0 && product.discountPrice < product.price;
+  //   const finalPrice = hasDiscount ? product.discountPrice : product.price;
 
-    const mainImage = product.images && product.images.length > 0
-      ? (product.images.find(img => img.isPrimary)?.url || product.images[0].url)
-      : 'https://via.placeholder.com/400x533';
+  //   const mainImage = product.images && product.images.length > 0
+  //     ? (product.images.find(img => img.isPrimary)?.url || product.images[0].url)
+  //     : 'https://via.placeholder.com/400x533';
 
-    return (
-      <div
-        onClick={() => detailPage(product)}
-        key={product._id}
-        className="group cursor-pointer rounded-2xl bg-[#1A0505]/60 border border-[#E8DFD1]/15 p-3.5 hover:border-[#F3C97A]/40 transition-all duration-300 hover:shadow-2xl hover:shadow-[#8C1515]/20 hover:-translate-y-1 flex flex-col justify-between"
-      >
-        {/* Image Container */}
-        <div className="relative aspect-3/4 w-full rounded-xl overflow-hidden bg-black/50 border border-[#E8DFD1]/10">
-          <img
-            src={mainImage}
-            alt={product.title}
-            className="w-full h-full object-cover object-center filter brightness-[0.9] contrast-[1.05] group-hover:scale-105 group-hover:brightness-100 transition-all duration-500"
-          />
+  //   return (
+  //     <div
+  //       onClick={() => detailPage(product)}
+  //       key={product._id}
+  //       className="group cursor-pointer rounded-2xl bg-[#1A0505]/60 border border-[#E8DFD1]/15 p-3.5 hover:border-[#F3C97A]/40 transition-all duration-300 hover:shadow-2xl hover:shadow-[#8C1515]/20 hover:-translate-y-1 flex flex-col justify-between"
+  //     >
+  //       {/* Image Container */}
+  //       <div className="relative aspect-3/4 w-full rounded-xl overflow-hidden bg-black/50 border border-[#E8DFD1]/10">
+  //         <img
+  //           src={mainImage}
+  //           alt={product.title}
+  //           className="w-full h-full object-cover object-center filter brightness-[0.9] contrast-[1.05] group-hover:scale-105 group-hover:brightness-100 transition-all duration-500"
+  //         />
 
-          {/* Badge Overlay */}
-          <div className="absolute top-3 left-3 z-10 flex gap-2">
-            <span className="px-2.5 py-1 rounded-md text-[10px] font-mono uppercase tracking-wider bg-[#1A0505]/80 backdrop-blur-md border border-[#E8DFD1]/20 text-[#F3C97A]">
-              {product.category || 'Collection'}
-            </span>
-            {hasDiscount ? (
-              <span className="px-2.5 py-1 rounded-md text-[10px] font-mono uppercase tracking-wider bg-[#8C1515] text-white">
-                Sale
-              </span>
-            ) : null}
-          </div>
+  //         {/* Badge Overlay */}
+  //         <div className="absolute top-3 left-3 z-10 flex gap-2">
+  //           <span className="px-2.5 py-1 rounded-md text-[10px] font-mono uppercase tracking-wider bg-[#1A0505]/80 backdrop-blur-md border border-[#E8DFD1]/20 text-[#F3C97A]">
+  //             {product.category || 'Collection'}
+  //           </span>
+  //           {hasDiscount ? (
+  //             <span className="px-2.5 py-1 rounded-md text-[10px] font-mono uppercase tracking-wider bg-[#8C1515] text-white">
+  //               Sale
+  //             </span>
+  //           ) : null}
+  //         </div>
 
-          {/* Quick Add to Cart Button */}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              isLogin && addToCart(product);
-            }}
-            aria-label="Add to cart"
-            className="absolute right-3 bottom-3 z-10 flex items-center justify-center w-11 h-11 rounded-xl bg-[#1A0505]/85 backdrop-blur-md border border-[#E8DFD1]/25 text-[#F3C97A] opacity-90 sm:opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-[#8C1515] hover:text-white hover:border-[#8C1515] hover:scale-105 shadow-xl"
-          >
-            <FiShoppingCart className="text-lg" />
-          </button>
-        </div>
+  //         {/* Quick Add to Cart Button */}
+  //         <button
+  //           onClick={(e) => {
+  //             e.stopPropagation();
+  //             isLogin && addToCart(product);
+  //           }}
+  //           aria-label="Add to cart"
+  //           className="absolute right-3 bottom-3 z-10 flex items-center justify-center w-11 h-11 rounded-xl bg-[#1A0505]/85 backdrop-blur-md border border-[#E8DFD1]/25 text-[#F3C97A] opacity-90 sm:opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-[#8C1515] hover:text-white hover:border-[#8C1515] hover:scale-105 shadow-xl"
+  //         >
+  //           <FiShoppingCart className="text-lg" />
+  //         </button>
+  //       </div>
 
-        {/* Card Details */}
-        <div className="pt-4 px-1 flex flex-col justify-between grow">
-          <div>
-            <h3 className="text-sm sm:text-base text-white font-medium line-clamp-1 group-hover:text-[#F3C97A] transition-colors duration-200">
-              {product.title}
-            </h3>
-          </div>
+  //       {/* Card Details */}
+  //       <div className="pt-4 px-1 flex flex-col justify-between grow">
+  //         <div>
+  //           <h3 className="text-sm sm:text-base text-white font-medium line-clamp-1 group-hover:text-[#F3C97A] transition-colors duration-200">
+  //             {product.title}
+  //           </h3>
+  //         </div>
 
-          <div className="mt-3 flex items-center justify-between border-t border-[#E8DFD1]/10 pt-2.5">
-            <div className="flex items-baseline gap-2">
-              <p className="text-sm sm:text-base font-serif font-semibold text-[#F3C97A]">
-                PKR {finalPrice?.toLocaleString()}
-              </p>
-              {hasDiscount ? (
-                <p className="text-xs text-stone-400 line-through">
-                  PKR {product.price?.toLocaleString()}
-                </p>
-              ): null}
-            </div>
-            <span className="text-[11px] font-mono text-[#E8DFD1]/50 uppercase tracking-widest group-hover:text-white transition-colors">
-              View Item →
-            </span>
-          </div>
-        </div>
-      </div>
-    );
-  };
+  //         <div className="mt-3 flex items-center justify-between border-t border-[#E8DFD1]/10 pt-2.5">
+  //           <div className="flex items-baseline gap-2">
+  //             <p className="text-sm sm:text-base font-serif font-semibold text-[#F3C97A]">
+  //               PKR {finalPrice?.toLocaleString()}
+  //             </p>
+  //             {hasDiscount ? (
+  //               <p className="text-xs text-stone-400 line-through">
+  //                 PKR {product.price?.toLocaleString()}
+  //               </p>
+  //             ): null}
+  //           </div>
+  //           <span className="text-[11px] font-mono text-[#E8DFD1]/50 uppercase tracking-widest group-hover:text-white transition-colors">
+  //             View Item →
+  //           </span>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // };
 
 
 
@@ -200,7 +202,9 @@ const HomePage = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-                  {newestProducts.slice(0, 4).map(renderProductCard)}
+                  {newestProducts.slice(0, 4).map((item)=>(
+                    <ProductCard key={item._id} product={item}/>
+                  ))}
                 </div>
               )}
 
@@ -236,7 +240,9 @@ const HomePage = () => {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-                  {featuredProducts.slice(0, 4).map(renderProductCard)}
+                  {featuredProducts.slice(0, 4).map((item)=>(
+                    <ProductCard key={item._id} product={item}/>
+                  ))}
                 </div>
               )}
 

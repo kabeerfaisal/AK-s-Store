@@ -1,229 +1,269 @@
 import React, { useState } from 'react';
-import { FiMapPin, FiPhone, FiMail, FiClock, FiSend } from 'react-icons/fi';
-import Navbar from '../Components/user/NavBar';
-import Footer from '../Components/user/Footer';
+import { 
+  FiMapPin, 
+  FiPhone, 
+  FiMail, 
+  FiClock, 
+  FiSend, 
+  FiCheckCircle, 
+  FiAlertCircle 
+} from 'react-icons/fi';
 import { motion } from 'framer-motion';
 
 const ContactPage = () => {
-  const [result, setResult] = useState("")
+  const [result, setResult] = useState("");
+
   const onSubmit = async (e) => {
-    e.preventDefault()
-    setResult("Sending...")
-    const formData = new FormData(e.target)
-    formData.append("access_key", "92f45adc-621c-449e-a9dd-1afe73c40773")
+    e.preventDefault();
+    setResult("Sending...");
+    const formData = new FormData(e.target);
+    formData.append("access_key", "92f45adc-621c-449e-a9dd-1afe73c40773");
 
     try {
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         body: formData
-      })
-      const data = await response.json()
+      });
+      const data = await response.json();
       if (data.success) {
-        setResult("Form Submitted Successfully")
-        e.target.reset()
+        setResult("Form Submitted Successfully");
+        e.target.reset();
       } else {
-        console.log("error details", data)
-        setResult(data.message || "Error");
+        console.log("error details", data);
+        setResult(data.message || "Error submitting form");
       }
     } catch (e) {
       console.error("Network Error:", e);
       setResult("Network error, please try again.");
     }
-  }
-
-
-
+  };
 
   return (
-    <>
-      <motion.div
-        className="min-h-screen flex flex-col bg-[#FAF8F5]"
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9, ease: "easeOut" }}
-      >
+    <motion.div
+      className="min-h-screen flex flex-col bg-[#1A0505] text-[#E8DFD1] selection:bg-[#8C1515] selection:text-white font-sans antialiased"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+    >
+      <main className="grow pt-24 pb-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
 
-        <main className="grow pt-16">
-
-          {/* Page Header */}
-          <div className="bg-linear-to-b from-[#F3EFEA] to-[#FAF8F5] border-b border-[#E8DFD1] py-16 md:py-20 text-center">
-            <div className="max-w-400 mx-auto px-4 sm:px-6 lg:px-8">
-              <span className="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-[#B45309] uppercase bg-[#FAF0D9] rounded-full border border-[#EAD196]">
-                Support
-              </span>
-              <h1 className="text-4xl font-extrabold text-[#7A0C0C] tracking-tight mb-4">
-                Get in <span className="text-[#8C1515]">Touch</span>
-              </h1>
-              <p className="max-w-2xl mx-auto text-lg text-stone-600">
-                Have a question about a product, your order, or just want to say hi? We'd love to hear from you.
-              </p>
+          {/* 1. PAGE HEADER */}
+          <section className="text-center max-w-3xl mx-auto space-y-4 pt-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#8C1515]/30 border border-[#F3C97A]/30 text-[#F3C97A] font-mono text-[11px] uppercase tracking-[0.25em]">
+              <span>Help & Support</span>
             </div>
-          </div>
 
-          {/* Contact Content Container */}
-          <div className="max-w-400 mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-8">
+            <h1 className="font-serif text-4xl sm:text-6xl text-white tracking-tight">
+              Get in <span className="italic font-normal text-[#F3C97A]">Touch</span>
+            </h1>
 
-              {/* Left Column: Contact Information */}
-              <div className="space-y-10 pr-0 lg:pr-10">
-                <div>
-                  <h2 className="text-3xl font-bold text-[#7A0C0C] mb-6">We're here to help</h2>
-                  <div className="w-16 h-1 bg-[#D97706] mb-6 rounded-full"></div>
-                  <p className="text-stone-600 leading-relaxed mb-8">
-                    Our customer service team is available throughout the week to assist you. Drop us a message, and we'll get back to you within 24 hours.
-                  </p>
-                </div>
+            <p className="text-xs sm:text-sm md:text-base text-[#E8DFD1]/70 font-mono leading-relaxed max-w-xl mx-auto">
+              Have an inquiry regarding a private drop, order status, or bespoke sizing? Our VIP concierge team is at your service.
+            </p>
+          </section>
 
-                <div className="space-y-8">
-                  {/* Info Item */}
-                  <div className="flex items-start group">
-                    <div className="shrink-0 mt-1">
-                      <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-[#FAF0D9] text-[#8C1515] border border-[#EAD196] group-hover:scale-110 transition-transform duration-300">
-                        <FiMapPin className="h-6 w-6" />
-                      </div>
-                    </div>
-                    <div className="ml-6">
-                      <h3 className="text-lg font-bold text-[#7A0C0C]">Headquarters</h3>
-                      <p className="mt-2 text-stone-600 leading-relaxed">
-                        123 Commerce Avenue<br />
-                        Suite 400<br />
-                        Portland, OR 97204
-                      </p>
-                    </div>
-                  </div>
+          {/* 2. GRID LAYOUT */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
 
-                  {/* Info Item */}
-                  <div className="flex items-start group">
-                    <div className="shrink-0 mt-1">
-                      <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-[#FAF0D9] text-[#8C1515] border border-[#EAD196] group-hover:scale-110 transition-transform duration-300">
-                        <FiPhone className="h-6 w-6" />
-                      </div>
-                    </div>
-                    <div className="ml-6">
-                      <h3 className="text-lg font-bold text-[#7A0C0C]">Phone Support</h3>
-                      <p className="mt-2 text-stone-600">
-                        Toll-Free: +1 (800) 123-4567<br />
-                        Local: +1 (555) 987-6543
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Info Item */}
-                  <div className="flex items-start group">
-                    <div className="shrink-0 mt-1">
-                      <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-[#FAF0D9] text-[#8C1515] border border-[#EAD196] group-hover:scale-110 transition-transform duration-300">
-                        <FiMail className="h-6 w-6" />
-                      </div>
-                    </div>
-                    <div className="ml-6">
-                      <h3 className="text-lg font-bold text-[#7A0C0C]">Email Us</h3>
-                      <p className="mt-2 text-stone-600">
-                        support@akstore.com<br />
-                        press@akstore.com
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Info Item */}
-                  <div className="flex items-start group">
-                    <div className="shrink-0 mt-1">
-                      <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-[#FAF0D9] text-[#8C1515] border border-[#EAD196] group-hover:scale-110 transition-transform duration-300">
-                        <FiClock className="h-6 w-6" />
-                      </div>
-                    </div>
-                    <div className="ml-6">
-                      <h3 className="text-lg font-bold text-[#7A0C0C]">Working Hours</h3>
-                      <p className="mt-2 text-stone-600">
-                        24/7 Available
-                      </p>
-                    </div>
-                  </div>
-                </div>
+            {/* Left Column: Contact Information */}
+            <div className="lg:col-span-5 space-y-8">
+              <div>
+                {/* <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#F3C97A] block mb-2">
+                  At Your Assistance
+                </span> */}
+                <h2 className="font-serif text-2xl sm:text-3xl text-white tracking-tight">
+                  We're Here to Help
+                </h2>
+                <p className="text-xs sm:text-sm text-[#E8DFD1]/70 leading-relaxed font-mono mt-3">
+                  Our client advisors are available 24/7 to assist with authentication details, shipping logistics, and custom consultations.
+                </p>
               </div>
 
-              {/* Right Column: Contact Form */}
-              <div className="bg-white rounded-2xl shadow-xl border border-[#E8DFD1] p-8 sm:p-10">
-                <h3 className="text-2xl font-bold text-[#7A0C0C] mb-6">Send us a message</h3>
+              <div className="space-y-4">
 
-                <form className="space-y-6" onSubmit={onSubmit}>
-
-                  {/* Name Fields (Side by side on small+ screens) */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                      <label htmlFor="first-name" className="block text-sm font-bold text-stone-700 mb-2">First Name</label>
-                      <input
-                        type="text"
-                        name="first_name"
-                        className="w-full px-4 py-3 bg-stone-50 border border-[#E8DFD1] rounded-lg text-stone-800 placeholder-stone-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#8C1515] focus:border-[#8C1515] transition-colors"
-                        placeholder="Jane"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="last-name" className="block text-sm font-bold text-stone-700 mb-2">Last Name</label>
-                      <input
-                        type="text"
-                        name="last_name"
-                        className="w-full px-4 py-3 bg-stone-50 border border-[#E8DFD1] rounded-lg text-stone-800 placeholder-stone-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#8C1515] focus:border-[#8C1515] transition-colors"
-                        placeholder="Doe"
-                      />
-                    </div>
+                {/* Info Card: Location */}
+                <div className="flex items-start gap-4 p-4 rounded-xl bg-[#250808]/60 border border-[#E8DFD1]/15 hover:border-[#F3C97A]/40 transition-all duration-300">
+                  <div className="w-10 h-10 rounded-lg bg-[#8C1515]/30 border border-[#F3C97A]/30 flex items-center justify-center text-[#F3C97A] shrink-0">
+                    <FiMapPin className="h-5 w-5" />
                   </div>
-
-                  {/* Email Field */}
                   <div>
-                    <label htmlFor="email" className="block text-sm font-bold text-stone-700 mb-2">Email Address</label>
+                    <h3 className="font-serif text-base text-white">Our Location</h3>
+                    <p className="text-xs text-[#E8DFD1]/70 font-mono mt-1 leading-relaxed">
+                      123 Commerce Avenue, Suite 400<br />
+                      AK'S STORE
+                    </p>
+                  </div>
+                </div>
+
+                {/* Info Card: Phone */}
+                <div className="flex items-start gap-4 p-4 rounded-xl bg-[#250808]/60 border border-[#E8DFD1]/15 hover:border-[#F3C97A]/40 transition-all duration-300">
+                  <div className="w-10 h-10 rounded-lg bg-[#8C1515]/30 border border-[#F3C97A]/30 flex items-center justify-center text-[#F3C97A] shrink-0">
+                    <FiPhone className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-base text-white">Land Line</h3>
+                    <p className="text-xs text-[#E8DFD1]/70 font-mono mt-1 leading-relaxed">
+                      Toll-Free: +1 (800) 123-4567<br />
+                      Direct VIP: +1 (555) 987-6543
+                    </p>
+                  </div>
+                </div>
+
+                {/* Info Card: Email */}
+                <div className="flex items-start gap-4 p-4 rounded-xl bg-[#250808]/60 border border-[#E8DFD1]/15 hover:border-[#F3C97A]/40 transition-all duration-300">
+                  <div className="w-10 h-10 rounded-lg bg-[#8C1515]/30 border border-[#F3C97A]/30 flex items-center justify-center text-[#F3C97A] shrink-0">
+                    <FiMail className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-base text-white">Email Us</h3>
+                    <p className="text-xs text-[#E8DFD1]/70 font-mono mt-1 leading-relaxed">
+                      support@akstore.com<br />
+                      press@akstore.com
+                    </p>
+                  </div>
+                </div>
+
+                {/* Info Card: Hours */}
+                <div className="flex items-start gap-4 p-4 rounded-xl bg-[#250808]/60 border border-[#E8DFD1]/15 hover:border-[#F3C97A]/40 transition-all duration-300">
+                  <div className="w-10 h-10 rounded-lg bg-[#8C1515]/30 border border-[#F3C97A]/30 flex items-center justify-center text-[#F3C97A] shrink-0">
+                    <FiClock className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 className="font-serif text-base text-white">Available Hours</h3>
+                    <p className="text-xs text-[#E8DFD1]/70 font-mono mt-1 leading-relaxed">
+                      24/7 Global Client Support
+                    </p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            {/* Right Column: Contact Form */}
+            <div className="lg:col-span-7 bg-[#1A0505]/90 backdrop-blur-md rounded-2xl border border-[#E8DFD1]/15 p-6 sm:p-10 shadow-2xl space-y-6">
+              <div>
+                <span className="text-xs font-mono uppercase tracking-[0.2em] text-[#F3C97A] block mb-1">
+                  // Send Inquiry
+                </span>
+                <h3 className="font-serif text-2xl sm:text-3xl text-white">
+                  Send Us a Message
+                </h3>
+              </div>
+
+              {/* Submission Feedback Banner */}
+              {result && (
+                <div className={`p-3.5 rounded-xl border text-xs font-mono flex items-center gap-2.5 ${
+                  result === "Form Submitted Successfully"
+                    ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-300'
+                    : result === "Sending..."
+                    ? 'bg-[#8C1515]/40 border-[#F3C97A]/40 text-[#F3C97A]'
+                    : 'bg-rose-950/60 border-rose-500/50 text-rose-300'
+                }`}>
+                  {result === "Form Submitted Successfully" ? (
+                    <FiCheckCircle className="h-4 w-4 shrink-0 text-emerald-400" />
+                  ) : (
+                    <FiAlertCircle className="h-4 w-4 shrink-0 text-[#F3C97A]" />
+                  )}
+                  <span>{result}</span>
+                </div>
+              )}
+
+              <form className="space-y-5" onSubmit={onSubmit}>
+
+                {/* First & Last Name */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-[11px] font-mono text-[#E8DFD1]/80 uppercase tracking-wider mb-1.5">
+                      First Name *
+                    </label>
                     <input
-                      type="email"
-                      name="email"
-                      className="w-full px-4 py-3 bg-stone-50 border border-[#E8DFD1] rounded-lg text-stone-800 placeholder-stone-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#8C1515] focus:border-[#8C1515] transition-colors"
-                      placeholder="jane@example.com"
+                      type="text"
+                      required
+                      name="first_name"
+                      placeholder="Jane"
+                      className="w-full px-4 py-3 bg-[#250808]/80 border border-[#E8DFD1]/20 rounded-xl text-xs sm:text-sm text-white placeholder-[#E8DFD1]/30 focus:outline-none focus:border-[#F3C97A] focus:ring-1 focus:ring-[#F3C97A] transition-all font-mono"
                     />
                   </div>
-
-                  {/* Subject Field */}
                   <div>
-                    <label htmlFor="subject" className="block text-sm font-bold text-stone-700 mb-2">Subject</label>
-                    <select
-                      id="subject"
-                      className="w-full px-4 py-3 bg-stone-50 border border-[#E8DFD1] rounded-lg text-stone-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#8C1515] focus:border-[#8C1515] transition-colors cursor-pointer"
-                    >
-                      <option>Order Status Inquiry</option>
-                      <option>Returns & Exchanges</option>
-                      <option>Product Question</option>
-                      <option>Other</option>
-                    </select>
+                    <label className="block text-[11px] font-mono text-[#E8DFD1]/80 uppercase tracking-wider mb-1.5">
+                      Last Name *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      name="last_name"
+                      placeholder="Doe"
+                      className="w-full px-4 py-3 bg-[#250808]/80 border border-[#E8DFD1]/20 rounded-xl text-xs sm:text-sm text-white placeholder-[#E8DFD1]/30 focus:outline-none focus:border-[#F3C97A] focus:ring-1 focus:ring-[#F3C97A] transition-all font-mono"
+                    />
                   </div>
+                </div>
 
-                  {/* Message Field */}
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-bold text-stone-700 mb-2">Message</label>
-                    <textarea
-                      id="message"
-                      name='message'
-                      rows="5"
-                      className="w-full px-4 py-3 bg-stone-50 border border-[#E8DFD1] rounded-lg text-stone-800 placeholder-stone-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#8C1515] focus:border-[#8C1515] transition-colors resize-none"
-                      placeholder="How can we help you today?"
-                    ></textarea>
-                  </div>
+                {/* Email */}
+                <div>
+                  <label className="block text-[11px] font-mono text-[#E8DFD1]/80 uppercase tracking-wider mb-1.5">
+                    Email Address *
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    name="email"
+                    placeholder="jane@example.com"
+                    className="w-full px-4 py-3 bg-[#250808]/80 border border-[#E8DFD1]/20 rounded-xl text-xs sm:text-sm text-white placeholder-[#E8DFD1]/30 focus:outline-none focus:border-[#F3C97A] focus:ring-1 focus:ring-[#F3C97A] transition-all font-mono"
+                  />
+                </div>
 
-                  {/* Submit Button */}
-                  <button
-                  disabled={result === "Sending..."}
-                    type="submit"
-                    className="w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-lg shadow-md text-base font-bold text-white bg-[#8C1515] hover:bg-[#680909] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#8C1515] transition-all duration-300"
+                {/* Subject Dropdown */}
+                <div>
+                  <label className="block text-[11px] font-mono text-[#E8DFD1]/80 uppercase tracking-wider mb-1.5">
+                    Inquiry Subject
+                  </label>
+                  <select
+                    id="subject"
+                    name="subject"
+                    className="w-full px-4 py-3 bg-[#250808] border border-[#E8DFD1]/20 rounded-xl text-xs sm:text-sm text-white focus:outline-none focus:border-[#F3C97A] focus:ring-1 focus:ring-[#F3C97A] transition-all cursor-pointer font-mono"
                   >
-                    {result === "Sending..." ? "Sending..." : "Send Message"} <FiSend className="ml-2 h-5 w-5" />
-                  </button>
+                    <option value="Order Status Inquiry" className="bg-[#1A0505]">Order Status Inquiry</option>
+                    <option value="Returns & Exchanges" className="bg-[#1A0505]">Returns & Exchanges</option>
+                    <option value="Product & Authentication Query" className="bg-[#1A0505]">Product & Authentication Query</option>
+                    <option value="VIP Concierge Consultation" className="bg-[#1A0505]">VIP Concierge Consultation</option>
+                    <option value="Other" className="bg-[#1A0505]">Other</option>
+                  </select>
+                </div>
 
-                </form>
-              </div>
+                {/* Message */}
+                <div>
+                  <label className="block text-[11px] font-mono text-[#E8DFD1]/80 uppercase tracking-wider mb-1.5">
+                    Message *
+                  </label>
+                  <textarea
+                    required
+                    id="message"
+                    name="message"
+                    rows="4"
+                    placeholder="How can our concierge team assist you today?"
+                    className="w-full px-4 py-3 bg-[#250808]/80 border border-[#E8DFD1]/20 rounded-xl text-xs sm:text-sm text-white placeholder-[#E8DFD1]/30 focus:outline-none focus:border-[#F3C97A] focus:ring-1 focus:ring-[#F3C97A] transition-all resize-none font-mono"
+                  ></textarea>
+                </div>
 
+                {/* Submit Button */}
+                <button
+                  disabled={result === "Sending..."}
+                  type="submit"
+                  className="w-full flex justify-center items-center gap-2 py-3.5 px-6 rounded-xl font-mono text-xs font-bold uppercase tracking-widest text-white bg-[#8C1515] hover:bg-[#a81a1a] border border-[#F3C97A]/30 shadow-xl hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 cursor-pointer"
+                >
+                  <span>{result === "Sending..." ? "Sending..." : "Send Message"}</span>
+                  <FiSend className="h-4 w-4" />
+                </button>
+
+              </form>
             </div>
+
           </div>
 
-        </main>
-      </motion.div>
-    </>
+        </div>
+      </main>
+    </motion.div>
   );
 };
 
