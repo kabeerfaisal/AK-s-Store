@@ -144,6 +144,6 @@ productSchema.index({ price: 1 });
 productSchema.index({ createdAt: -1 });
 productSchema.index({ title: 'text', description: 'text' });
 
-const Product = mongoose.models.Product || mongoose.model('Product', productSchema);
+const Product = mongoose.model('Product', productSchema);
 
 export default Product;
