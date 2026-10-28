@@ -5,9 +5,45 @@ import { FiX, FiShoppingCart, FiTrash2, FiPlus, FiMinus, FiArrowRight } from 're
 import { CartContext } from '../../hooks/CartHook';
 
 const CartDrawer = ({ isOpen, onClose }) => {
-  let { cart, cartSubtotal, cartIncrement, removeProduct, addToCart, cartDecrement } = useContext(CartContext)
+  let { cart = [], cartSubtotal = 0, updateCart, removeProductData} = useContext(CartContext)
 
+  const handleIncrement = (item) => {
+    const productId = item.productId._id
+    const currentStock = item.productId.stock
 
+    if (currentStock && item.quantity >= currentStock) {
+      alert(`Cannot add more. Only ${currentStock} units available in stock.`);
+      return;
+    }
+
+    updateCart({
+      productId: productId,
+      quantity: item.quantity + 1,
+      selectedSize: item.selectedSize || ""
+    })
+  }
+
+  const handleDecrement = (item) => {
+    const productId = item.productId?._id;
+
+    if (item.quantity > 1) {
+      updateCart({
+        productId: productId,
+        quantity: item.quantity - 1,
+        selectedSize: item.selectedSize || ""
+      });
+    } else {
+      handleRemove(item);
+    }
+  };
+
+  const handleRemove = (item) => {
+     const productId = item.productId?._id;
+     removeProductData({
+      productId: productId,
+      selectedSize: item.selectedSize || ""
+     })
+  }
 
   return (
     <AnimatePresence>
@@ -51,32 +87,42 @@ const CartDrawer = ({ isOpen, onClose }) => {
                 <div className="grow overflow-y-auto px-6 py-6 space-y-4">
                   {cart.length > 0 ? (
                     cart.map((item, index) => {
+
+                      const product = typeof item.productId === 'object' && item.productId !== null ? item.productId : {};
+                    const title = product.title || item.title || 'Product';
+                    const category = product.category || item.category || '';
+                    const images = product.images || item.images || [];
+
+                    const imageUrl = images.length > 0
+                      ? (images.find(img => img.isPrimary)?.url || images[0]?.url || (typeof images[0] === 'string' ? images[0] : ''))
+                      : 'https://via.placeholder.com/150';
+
+                    const itemKey = `${item._id || index}-${item.selectedSize}`;
+
                       return (
-                        <div className="flex items-center space-x-4 bg-[#120404]/60 p-4 rounded-xl border border-[#EAD196]/10 relative group">
+                        <div key={itemKey} className="flex items-center space-x-4 bg-[#120404]/60 p-4 rounded-xl border border-[#EAD196]/10 relative group">
                           <div className="w-20 h-20 bg-white/5 rounded-lg p-2 flex items-center justify-center shrink-0 border border-[#EAD196]/10">
                             <img
-                              src={item.images && item.images.length > 0
-                                ? (item.images.find(img => img.isPrimary)?.url || item.images[0].url)
-                                : 'https://placeholder.com'}
-                              alt={item.title}
+                              src={imageUrl}
+                              alt={title}
                               className="w-full h-full object-contain mix-blend-luminosity hover:mix-blend-normal transition duration-300"
                             />
                           </div>
                           <div className="grow min-w-0">
-                            <h3 className="text-sm font-bold text-[#EEEEEE] truncate">{item.title}</h3>
-                            <p className="text-xs font-semibold text-[#EAD196] mt-1">PKR {item.price}</p>
+                            <h3 className="text-sm font-bold text-[#EEEEEE] truncate">{title}</h3>
+                            <p className="text-xs font-semibold text-[#EAD196] mt-1">PKR {item.price.toLocaleString()}</p>
 
                             <div className="flex items-center justify-between mt-3">
                               <div className="flex items-center border border-[#EAD196]/30 rounded bg-white/5">
-                                <button onClick={() => cartDecrement(item._id, item.selectedSize)} className="p-1 text-[#EEEEEE]/70 hover:text-[#EAD196]" aria-label="Decrease quantity">
+                                <button onClick={() => handleDecrement(item)} className="p-1 text-[#EEEEEE]/70 hover:text-[#EAD196]" aria-label="Decrease quantity">
                                   <FiMinus className="h-3 w-3" />
                                 </button>
                                 <span className="px-2.5 text-xs font-bold text-[#EEEEEE]">{item.quantity}</span>
-                                <button onClick={() =>cartIncrement(item._id, item.selectedSize)} className="p-1 text-[#EEEEEE]/70 hover:text-[#EAD196]" aria-label="Increase quantity">
+                                <button onClick={() =>handleIncrement(item)} className="p-1 text-[#EEEEEE]/70 hover:text-[#EAD196]" aria-label="Increase quantity">
                                   <FiPlus className="h-3 w-3" />
                                 </button>
                               </div>
-                              <button onClick={() => removeProduct(item._id, item.selectedSize)} className="text-[#EEEEEE]/50 hover:text-[#BF3131] transition p-1" aria-label="Remove item">
+                              <button onClick={() => handleRemove(item)} className="text-[#EEEEEE]/50 hover:text-[#BF3131] transition p-1" aria-label="Remove item">
                                 <FiTrash2 className="h-4 w-4" />
                               </button>
                               <div className="flex items-center gap-2 mt-1">
@@ -85,9 +131,9 @@ const CartDrawer = ({ isOpen, onClose }) => {
                                     Size: {item.selectedSize}
                                   </span>
                                 )}
-                                {item.category && (
+                                {category && (
                                   <span className="text-[10px] text-stone-400 uppercase tracking-widest truncate">
-                                    {item.category}
+                                    {category}
                                   </span>
                                 )}
                               </div>

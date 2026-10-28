@@ -1,6 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginUser, registerUser } from "../services/authService";
+import { CartContext } from "./CartHook";
 
 
 export const AuthContext = createContext();
@@ -8,6 +9,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     
     const navigate = useNavigate();
+    const {setCart, getCartData} = useContext(CartContext)
     const [user, setUser] = useState(()=>{
         const storedUser = localStorage.getItem('user');
         return storedUser ? JSON.parse(storedUser) : null;
@@ -48,6 +50,7 @@ export const AuthProvider = ({ children }) => {
             const data = await loginUser(credentials);
             saveAuthData(data);
             navigate('/');
+           await getCartData()
         } catch (error) {
             setError(error.response?.data?.message || error.message || 'Login failed. Please try again.');
         }finally {
@@ -73,6 +76,7 @@ export const AuthProvider = ({ children }) => {
         setUser(null);
         setToken(null);
         setIsLogin(false);
+        setCart([])
         localStorage.clear();
         navigate('/');
     }

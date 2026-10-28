@@ -7,7 +7,7 @@ import { useAuth } from '../../hooks/AuthHook';
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
   const { isLogin } = useAuth();
-  const { addToCart } = useContext(CartContext);
+  const { addTocart } = useContext(CartContext);
 
   if (!product) return null;
 
@@ -27,8 +27,14 @@ const ProductCard = ({ product }) => {
 
   const handleQuickAdd = (e) => {
     e.stopPropagation();
+
+    const defaultSize = product.sizes && product.sizes.length > 0 ? product.sizes[0] : '';
     if (!isOutOfStock && isLogin) {
-      addToCart(product);
+      addTocart({
+        productId: product._id,
+        quantity: 1,
+        selectedSize: defaultSize
+      });
     }
   };
 

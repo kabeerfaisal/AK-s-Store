@@ -16,7 +16,7 @@ import { CartContext } from '../hooks/CartHook';
 function ProductDetail() {
   const { id } = useParams();
   const { state } = useLocation();
-  const { addToCart } = useContext(CartContext);
+  const { addTocart } = useContext(CartContext);
 
   const [product, setProduct] = useState(state || null);
   const [loading, setLoading] = useState(!state);
@@ -97,10 +97,11 @@ function ProductDetail() {
 
   const handleAddToCart = () => {
     if (isOutOfStock) return;
-    addToCart({
+    addTocart({
       ...state,
-      selectedSize,
-      quantity,
+      productId: product._id,
+      selectedSize: selectedSize,
+      quantity: quantity,
     });
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
