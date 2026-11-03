@@ -55,7 +55,7 @@ export const createOrder = async (req, res) => {
             const price = hasDiscount ? product.discountPrice : product.price;
 
             const primaryImage = product.images.find(img => img.isPrimary)?.url
-            || product.images[0]?.url || '';
+                || product.images[0]?.url || '';
 
             orderItems.push({
                 productId: product._id,
@@ -71,7 +71,7 @@ export const createOrder = async (req, res) => {
         }
 
         //shipping fee and total amount calculation
-        const shippingFee = itemsPrice > 5000 ? 0 : 250; 
+        const shippingFee = itemsPrice > 5000 ? 0 : 250;
         const totalAmount = itemsPrice + shippingFee;
 
 
@@ -96,10 +96,10 @@ export const createOrder = async (req, res) => {
         await cart.save();
 
         res.status(201).json({
-      success: true,
-      message: "Order placed successfully!",
-      order: order,
-    });
+            success: true,
+            message: "Order placed successfully!",
+            order: order,
+        });
 
     } catch (error) {
         res.status(500).json({
@@ -120,7 +120,7 @@ export const getMyOrders = async (req, res) => {
             success: true,
             orders: orders,
         });
-    }catch (error) {
+    } catch (error) {
         res.status(500).json({
             success: false,
             message: "Server Error: Unable to fetch orders.",
@@ -150,6 +150,74 @@ export const getOrderById = async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Server Error: Unable to fetch order.",
+            error: error.message,
+        });
+    }
+}
+
+export const getAllOrders = async (req, res) => {
+    try {
+        const { status } = req.query;
+        const filter = status && status !== 'All' ? { orderStatus: status } : {};
+        const orders = await Order.find(filter)
+            .populate('user', 'fullname email')
+            .sort({ createdAt: -1 });
+
+        res.status(200).json({
+            success: true,
+            orders: orders,
+            count: orders.length,
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Server Error: Unable to fetch all orders.",
+            error: error.message,
+        });
+    }
+}
+
+export const updateOrder = async (req, res) => {
+    try {
+        const orderStatus = req.body.orderStatus || req.body.status;
+        const { paymentStatus } = req.body;
+        const order = await Order.findById(req.params.id);
+
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: "Order not found.",
+            });
+        }
+
+        if (orderStatus) {
+            order.orderStatus = orderStatus;
+        }
+        if (paymentStatus) {
+            order.paymentStatus = paymentStatus;
+        }
+
+        if (
+            orderStatus &&
+            orderStatus.toLowerCase() === 'delivered' &&
+            order.paymentMethod === 'COD'
+        ) {
+            order.paymentStatus = 'Paid'; 
+        }
+
+        const updatedOrder = await order.save();
+
+        res.status(200).json({
+            success: true,
+            message: `Order status updated to '${updatedOrder.orderStatus}'.`,
+            order: updatedOrder,
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Server Error: Unable to update order.",
             error: error.message,
         });
     }

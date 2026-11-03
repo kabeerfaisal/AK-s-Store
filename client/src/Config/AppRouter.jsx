@@ -9,7 +9,6 @@ import LoginPage from '../Pages/LoginPage'
 import ProtectRouteComponent from '../Components/protectRouteComponent'
 import RegisterPage from '../Pages/registerPage'
 import UserLayout from '../layout/userLayout'
-import AdminHome from '../AdminPages/AdminHome'
 import AdminLayout from '../layout/adminLayout'
 import AdminDashboard from '../AdminPages/AdminHome'
 import AdminProtectedRoute from '../Components/AdminProtectedRoutesComponent'
@@ -18,6 +17,7 @@ import ProductsByCategory from '../Pages/ProductsByCategory'
 import Checkout from '../Pages/CheckoutPage'
 import OrderSuccess from '../Components/user/orderSuccess'
 import MyOrders from '../Pages/MyOrders'
+import AdminOrders from '../AdminPages/AdminOrder'
 
 function AppRouter() {
   return (
@@ -44,6 +44,7 @@ function AppRouter() {
         <Route element={<AdminLayout />}>
           <Route path='/admin' element={<AdminDashboard />} />
           <Route path='/admin/products' element={<AdminProductPage />} />
+          <Route path='/admin/orders' element={<AdminOrders />} />
 
         </Route>
       </Route>

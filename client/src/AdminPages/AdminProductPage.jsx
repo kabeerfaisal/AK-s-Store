@@ -13,7 +13,6 @@ import {
 } from 'lucide-react';
 
 import { deleteProduct } from '../services/Admin_Services/AdminProductServices';
-// import { useGetProduct } from '../hooks/GetProductsHook';
 
 import { useOutletContext } from 'react-router-dom';
 import GetProductsByFilter from '../hooks/GetProductsByFilter';
@@ -248,10 +247,6 @@ function AdminProducts() {
         </div>
       </div>
     </div>
-
-
-
-    // </div >
   );
 }
 

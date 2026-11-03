@@ -237,7 +237,7 @@ const OrderSuccess = () => {
                 {/* Navigation Action Buttons */}
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
                     <Link
-                        to="/my-orders"
+                        to="/orders"
                         className="w-full sm:flex-1 bg-[#1A0808] hover:bg-[#120404] text-[#EAD196] py-3 sm:py-3.5 px-4 rounded-xl font-mono text-[11px] sm:text-xs font-bold uppercase tracking-wider border border-[#EAD196]/30 shadow-lg transition flex items-center justify-center space-x-2"
                     >
                         <span>View All Orders</span>

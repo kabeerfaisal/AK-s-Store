@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { 
   LayoutDashboard, Package, ShoppingCart, Users, Settings, LogOut, ShieldCheck, X
 } from 'lucide-react';
@@ -7,13 +7,7 @@ import { useAuth } from '../../hooks/AuthHook';
 
 // Props receive kiye
 function AdminSidebar({ isOpen, setIsOpen }) {
-  const navigate = useNavigate();
-  const { handleLogout, user, logout} = useAuth() || { user: { name: 'Admin User' } }; 
-
-  const handleSignOut = () => {
-    if (handleLogout) handleLogout();
-    navigate('/login');
-  };
+  const { user, logout} = useAuth() || { user: { name: 'Admin User' } }; 
 
   const navItems = [
     { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
