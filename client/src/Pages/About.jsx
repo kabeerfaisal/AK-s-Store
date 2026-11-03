@@ -8,6 +8,7 @@ import {
   FiArrowRight,
 } from 'react-icons/fi';
 import { TbShieldCheckFilled, TbSparkles } from "react-icons/tb";
+import { useEffect } from 'react';
 
 const AboutPage = () => {
   const luxuryPillars = [
@@ -39,6 +40,10 @@ const AboutPage = () => {
     { id: 3, name: 'Marcus Vance', role: 'Lead Archivist', image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=500&q=80' },
     { id: 4, name: 'Sophia Chen', role: 'VIP Concierge Relations', image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&w=500&q=80' }
   ];
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <motion.div 

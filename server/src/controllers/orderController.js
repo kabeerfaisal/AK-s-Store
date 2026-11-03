@@ -49,6 +49,11 @@ export const createOrder = async (req, res) => {
                 continue;
             }
 
+            //has discount or not
+            const hasDiscount = product.discountPrice && product.discountPrice > 0 && product.discountPrice < product.price;
+
+            const price = hasDiscount ? product.discountPrice : product.price;
+
             const primaryImage = product.images.find(img => img.isPrimary)?.url
             || product.images[0]?.url || '';
 
@@ -56,12 +61,12 @@ export const createOrder = async (req, res) => {
                 productId: product._id,
                 title: product.title,
                 quantity: item.quantity,
-                price: product.price,
+                price: price,
                 selectedSize: item.selectedSize || '',
                 image: primaryImage,
             });
 
-            itemsPrice += item.price * item.quantity;
+            itemsPrice += price * item.quantity;
 
         }
 

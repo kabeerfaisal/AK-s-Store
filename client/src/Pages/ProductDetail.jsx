@@ -1,15 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useLocation, Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { 
-  FiShoppingCart, 
-  FiArrowLeft, 
-  FiCheck, 
-  FiTruck, 
-  FiShield, 
-  FiMinus, 
-  FiPlus, 
-  FiStar 
+import {
+  FiShoppingCart,
+  FiArrowLeft,
+  FiCheck,
+  FiTruck,
+  FiShield,
+  FiMinus,
+  FiPlus,
+  FiStar
 } from 'react-icons/fi';
 import { CartContext } from '../hooks/CartHook';
 
@@ -80,8 +80,8 @@ function ProductDetail() {
       <div className="min-h-screen bg-[#FAF8F5] flex flex-col items-center justify-center p-6 text-center">
         <h2 className="text-2xl font-bold text-stone-900 mb-2">Product Not Found</h2>
         <p className="text-sm text-stone-500 mb-6">The item you are looking for is unavailable or link has expired.</p>
-        <Link 
-          to="/shop" 
+        <Link
+          to="/shop"
           className="inline-flex items-center gap-2 bg-[#8C1515] text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-[#701010] transition-colors"
         >
           <FiArrowLeft /> Return to Shop
@@ -91,7 +91,7 @@ function ProductDetail() {
   }
 
   // Pricing & Stock Calculations
-  const hasDiscount = product.discountPrice && product.discountPrice < product.price && product.discountPrice > 0  ;
+  const hasDiscount = product.discountPrice && product.discountPrice < product.price && product.discountPrice > 0;
   const finalPrice = hasDiscount ? product.discountPrice : product.price;
   const isOutOfStock = product.stock === 0 || product.status === 'out_of_stock';
 
@@ -108,17 +108,21 @@ function ProductDetail() {
   };
 
   return (
-    <div className="bg-[#FAF8F5] min-h-screen text-stone-900 font-sans antialiased pb-16">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="bg-[#FAF8F5] min-h-screen text-stone-900 font-sans antialiased pb-16">
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24">
-        
+
         {/* Navigation Breadcrumb */}
-        <motion.div 
-          initial={{ opacity: 0, y: -10 }} 
-          animate={{ opacity: 1, y: 0 }} 
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
           className="mb-6 flex items-center justify-between"
         >
-          <Link 
-            to="/shop" 
+          <Link
+            to="/shop"
             className="inline-flex items-center gap-2 text-stone-500 hover:text-[#8C1515] transition-colors text-xs sm:text-sm font-medium uppercase tracking-wider"
           >
             <FiArrowLeft className="h-4 w-4" /> Back to Products
@@ -131,10 +135,10 @@ function ProductDetail() {
 
         {/* Product Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 bg-white rounded-2xl border border-[#E8DFD1] p-4 sm:p-8 shadow-sm">
-          
+
           {/* LEFT: Image Gallery (7 Cols on Desktop) */}
           <div className="lg:col-span-7 flex flex-col-reverse sm:flex-row gap-4">
-            
+
             {/* Thumbnail Strip */}
             {product.images && product.images.length > 1 && (
               <div className="flex sm:flex-col gap-3 overflow-x-auto sm:overflow-y-auto max-h-125 shrink-0 scrollbar-thin">
@@ -142,11 +146,10 @@ function ProductDetail() {
                   <button
                     key={idx}
                     onClick={() => setSelectedImage(img.url)}
-                    className={`relative w-16 h-20 sm:w-20 sm:h-24 rounded-lg overflow-hidden border-2 transition-all shrink-0 bg-[#FAF8F5] ${
-                      selectedImage === img.url 
-                        ? 'border-[#8C1515] shadow-xs scale-95' 
+                    className={`relative w-16 h-20 sm:w-20 sm:h-24 rounded-lg overflow-hidden border-2 transition-all shrink-0 bg-[#FAF8F5] ${selectedImage === img.url
+                        ? 'border-[#8C1515] shadow-xs scale-95'
                         : 'border-[#E8DFD1] opacity-70 hover:opacity-100'
-                    }`}
+                      }`}
                   >
                     <img src={img.url} alt={`Thumbnail ${idx}`} className="w-full h-full object-contain p-1" />
                   </button>
@@ -156,12 +159,11 @@ function ProductDetail() {
 
             {/* Main Image Stage */}
             <div className="relative flex-1 aspect-3/4 max-h-137.5 bg-[#FAF8F5] rounded-xl overflow-hidden border border-[#E8DFD1]/60 flex items-center justify-center p-6 group">
-              <img 
-                src={selectedImage || 'https://via.placeholder.com/500'} 
-                alt={product.title} 
-                className={`max-h-full max-w-full object-contain transition-transform duration-700 ease-out group-hover:scale-105 ${
-                  isOutOfStock ? 'opacity-30 grayscale' : ''
-                }`}
+              <img
+                src={selectedImage || 'https://via.placeholder.com/500'}
+                alt={product.title}
+                className={`max-h-full max-w-full object-contain transition-transform duration-700 ease-out group-hover:scale-105 ${isOutOfStock ? 'opacity-30 grayscale' : ''
+                  }`}
               />
 
               {/* Status Overlay Badges */}
@@ -188,7 +190,7 @@ function ProductDetail() {
 
           {/* RIGHT: Product Details (5 Cols on Desktop) */}
           <div className="lg:col-span-5 flex flex-col justify-between space-y-6">
-            
+
             {/* Category & Collection */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
@@ -227,7 +229,7 @@ function ProductDetail() {
                 <span className="text-base text-stone-400 line-through font-medium">
                   PKR {product.price?.toLocaleString()}
                 </span>
-              ): null}
+              ) : null}
             </div>
 
             {/* Description */}
@@ -251,11 +253,10 @@ function ProductDetail() {
                     <button
                       key={sz}
                       onClick={() => setSelectedSize(sz)}
-                      className={`px-4 py-2 rounded-lg text-xs font-bold border transition-all ${
-                        selectedSize === sz
+                      className={`px-4 py-2 rounded-lg text-xs font-bold border transition-all ${selectedSize === sz
                           ? 'bg-[#8C1515] text-white border-[#8C1515] shadow-xs'
                           : 'bg-white text-stone-700 border-[#E8DFD1] hover:border-stone-400'
-                      }`}
+                        }`}
                     >
                       {sz}
                     </button>
@@ -267,10 +268,10 @@ function ProductDetail() {
             {/* Quantity Selector & Action Buttons */}
             <div className="space-y-4 pt-2">
               <div className="flex items-center gap-4">
-                
+
                 {/* Quantity Control */}
                 <div className="flex items-center border border-[#E8DFD1] rounded-lg bg-[#FAF8F5]">
-                  <button 
+                  <button
                     onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
                     className="p-2.5 text-stone-600 hover:text-stone-900"
                     disabled={isOutOfStock}
@@ -280,7 +281,7 @@ function ProductDetail() {
                   <span className="px-4 text-xs font-bold text-stone-800">
                     {quantity}
                   </span>
-                  <button 
+                  <button
                     onClick={() => setQuantity(prev => prev + 1)}
                     className="p-2.5 text-stone-600 hover:text-stone-900"
                     disabled={isOutOfStock}
@@ -293,13 +294,12 @@ function ProductDetail() {
                 <button
                   onClick={handleAddToCart}
                   disabled={isOutOfStock}
-                  className={`flex-1 flex items-center justify-center gap-2 py-3 px-6 rounded-lg text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-300 shadow-md ${
-                    isOutOfStock 
+                  className={`flex-1 flex items-center justify-center gap-2 py-3 px-6 rounded-lg text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-300 shadow-md ${isOutOfStock
                       ? 'bg-stone-300 text-stone-500 cursor-not-allowed'
-                      : added 
-                      ? 'bg-emerald-700 text-white' 
-                      : 'bg-[#8C1515] hover:bg-[#701010] text-white active:scale-[0.99]'
-                  }`}
+                      : added
+                        ? 'bg-emerald-700 text-white'
+                        : 'bg-[#8C1515] hover:bg-[#701010] text-white active:scale-[0.99]'
+                    }`}
                 >
                   {added ? (
                     <>
@@ -330,7 +330,7 @@ function ProductDetail() {
         </div>
 
       </main>
-    </div>
+    </motion.div>
   );
 }
 

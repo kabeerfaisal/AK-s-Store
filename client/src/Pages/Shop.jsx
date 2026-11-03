@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FiFilter, FiChevronDown, FiX, FiSearch, FiShoppingBag, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { motion } from 'framer-motion';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import GetProductsByFilter from '../hooks/GetProductsByFilter';
 import ProductCard from '../Components/user/productCard';
+import { useEffect } from 'react';
 
 
 const ShopPage = () => {
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
-  // const Navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams()
 
   const currentCategory = searchParams.get('category') || 'all';
@@ -54,6 +54,10 @@ const ShopPage = () => {
     'Apparel',
     'Jewelry'
   ];
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <>

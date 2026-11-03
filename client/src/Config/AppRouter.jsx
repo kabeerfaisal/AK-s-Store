@@ -15,6 +15,9 @@ import AdminDashboard from '../AdminPages/AdminHome'
 import AdminProtectedRoute from '../Components/AdminProtectedRoutesComponent'
 import AdminProductPage from '../AdminPages/AdminProductPage'
 import ProductsByCategory from '../Pages/ProductsByCategory'
+import Checkout from '../Pages/CheckoutPage'
+import OrderSuccess from '../Components/user/orderSuccess'
+import MyOrders from '../Pages/MyOrders'
 
 function AppRouter() {
   return (
@@ -30,6 +33,10 @@ function AppRouter() {
           <Route path='/about' element={<About />} />
           <Route path='/contact' element={<Contact />} />
           <Route path='/shop/product-detail/:id' element={<ProductDetail />} />
+          <Route path='/checkout' element= {<Checkout/>} />
+          <Route path='/order-success/:id' element= {<OrderSuccess/>} />
+          <Route path='/orders' element= {<MyOrders/>} />
+
         </Route>
       </Route>
 

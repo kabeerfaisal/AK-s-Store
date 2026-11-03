@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { 
-  FiMapPin, 
-  FiPhone, 
-  FiMail, 
-  FiClock, 
-  FiSend, 
-  FiCheckCircle, 
-  FiAlertCircle 
+import {
+  FiMapPin,
+  FiPhone,
+  FiMail,
+  FiClock,
+  FiSend,
+  FiCheckCircle,
+  FiAlertCircle
 } from 'react-icons/fi';
 import { motion } from 'framer-motion';
+import { useEffect } from 'react';
 
 const ContactPage = () => {
   const [result, setResult] = useState("");
@@ -37,6 +38,10 @@ const ContactPage = () => {
       setResult("Network error, please try again.");
     }
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <motion.div
@@ -153,13 +158,12 @@ const ContactPage = () => {
 
               {/* Submission Feedback Banner */}
               {result && (
-                <div className={`p-3.5 rounded-xl border text-xs font-mono flex items-center gap-2.5 ${
-                  result === "Form Submitted Successfully"
+                <div className={`p-3.5 rounded-xl border text-xs font-mono flex items-center gap-2.5 ${result === "Form Submitted Successfully"
                     ? 'bg-emerald-950/60 border-emerald-500/50 text-emerald-300'
                     : result === "Sending..."
-                    ? 'bg-[#8C1515]/40 border-[#F3C97A]/40 text-[#F3C97A]'
-                    : 'bg-rose-950/60 border-rose-500/50 text-rose-300'
-                }`}>
+                      ? 'bg-[#8C1515]/40 border-[#F3C97A]/40 text-[#F3C97A]'
+                      : 'bg-rose-950/60 border-rose-500/50 text-rose-300'
+                  }`}>
                   {result === "Form Submitted Successfully" ? (
                     <FiCheckCircle className="h-4 w-4 shrink-0 text-emerald-400" />
                   ) : (

@@ -46,6 +46,9 @@ const UserNavbar = () => {
               <Link to="/contact" className="text-[#7D0A0A] hover:text-[#BF3131] transition duration-200 py-1 border-b-2 border-transparent hover:border-[#BF3131]">
                 Contact
               </Link>
+              <Link to="/orders" className="text-[#7D0A0A] hover:text-[#BF3131] transition duration-200 py-1 border-b-2 border-transparent hover:border-[#BF3131]">
+                My Orders
+              </Link>
             </div>
 
             {/* 3. Desktop Actions (User & Cart) */}
@@ -142,6 +145,7 @@ const UserNavbar = () => {
                 <Link to="/shop" onClick={toggleMenu} className="block px-3 py-2 rounded-lg text-base font-medium text-[#7D0A0A] hover:bg-[#EAD196]/30 hover:text-[#BF3131] transition">Shop</Link>
                 <Link to="/about" onClick={toggleMenu} className="block px-3 py-2 rounded-lg text-base font-medium text-[#7D0A0A] hover:bg-[#EAD196]/30 hover:text-[#BF3131] transition">About Us</Link>
                 <Link to="/contact" onClick={toggleMenu} className="block px-3 py-2 rounded-lg text-base font-medium text-[#7D0A0A] hover:bg-[#EAD196]/30 hover:text-[#BF3131] transition">Contact</Link>
+                <Link to="/orders" onClick={toggleMenu} className="block px-3 py-2 rounded-lg text-base font-medium text-[#7D0A0A] hover:bg-[#EAD196]/30 hover:text-[#BF3131] transition">My Orders</Link>
               </div>
 
               <div className="pt-3 pb-4 border-t border-[#EAD196]/40 px-4">

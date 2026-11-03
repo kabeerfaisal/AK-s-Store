@@ -1,12 +1,12 @@
 import React, { useCallback, useContext } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FiX, FiShoppingCart, FiTrash2, FiPlus, FiMinus, FiArrowRight } from 'react-icons/fi';
 import { CartContext } from '../../hooks/CartHook';
 
 const CartDrawer = ({ isOpen, onClose }) => {
   let { cart = [], cartSubtotal = 0, updateCart, removeProductData} = useContext(CartContext)
-
+  let navigate = useNavigate()
   const handleIncrement = (item) => {
     const productId = item.productId._id
     const currentStock = item.productId.stock
@@ -161,7 +161,10 @@ const CartDrawer = ({ isOpen, onClose }) => {
 
                     <div className="space-y-2">
                       <button
-                        onClick={onClose}
+                        onClick={() => {
+                          onClose();
+                          navigate('/checkout');
+                        }}
                         className="w-full bg-[#BF3131] hover:bg-[#7D0A0A] text-[#EEEEEE] py-3 rounded-lg font-bold text-xs uppercase tracking-wider shadow-lg transition-all flex items-center justify-center space-x-2 border border-[#BF3131]/30"
                       >
                         <span>Proceed to Checkout</span>
