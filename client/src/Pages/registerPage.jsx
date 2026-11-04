@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { User, Mail, Calendar, Lock, Eye, EyeOff } from 'lucide-react';
 import { FaGithub, FaUserCircle } from 'react-icons/fa';
 import { useAuth } from '../hooks/AuthHook';
+import AuthComponent from '../Components/user/AuthComponent';
 function RegisterPage() {
     const navigate = useNavigate()
 
@@ -173,7 +174,7 @@ function RegisterPage() {
                         </form>
 
                         {/* Social Login Dividers */}
-                        <div className="mt-8">
+                        {/* <div className="mt-8">
                             <div className="relative">
                                 <div className="absolute inset-0 flex items-center" aria-hidden="true">
                                     <div className="w-full border-t border-[#E8DFD1]" />
@@ -202,7 +203,9 @@ function RegisterPage() {
                                     Guest
                                 </button>
                             </div>
-                        </div>
+                        </div> */}
+
+                        <AuthComponent/>
 
                         <p className="mt-10 text-center text-sm text-gray-500">
                             Already have an account?{' '}

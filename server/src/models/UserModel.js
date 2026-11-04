@@ -13,18 +13,25 @@ let userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        required: function () {
+            return !this.googleId;
+        }
     },
-    age:{
+    age: {
         type: Number,
-        required: true
+        required: function () {
+            return !this.googleId;
+        }
+    },
+    googleId: {
+        type: String
     },
     role: {
         type: String,
-        enum:["user", "admin"],
+        enum: ["user", "admin"],
         default: "user"
     }
-},{
+}, {
     timestamps: true
 });
 

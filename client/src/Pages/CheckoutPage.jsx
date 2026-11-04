@@ -79,6 +79,10 @@ const Checkout = () => {
     );
   }
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#120404] text-[#EEEEEE] py-10 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-6xl mx-auto">

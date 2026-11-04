@@ -1,23 +1,24 @@
 import { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser, registerUser } from "../services/authService";
+import { googleAuthService, loginUser, registerUser } from "../services/authService";
 import { CartContext } from "./CartHook";
+import { useGoogleLogin } from "@react-oauth/google";
 
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    
+
     const navigate = useNavigate();
-    const {setCart, getCartData} = useContext(CartContext)
-    const [user, setUser] = useState(()=>{
+    const { setCart, getCartData } = useContext(CartContext)
+    const [user, setUser] = useState(() => {
         const storedUser = localStorage.getItem('user');
         return storedUser ? JSON.parse(storedUser) : null;
     });
-    const [token, setToken] = useState(()=>{
+    const [token, setToken] = useState(() => {
         return localStorage.getItem('token') || null;
     });
-    const [isLogin, setIsLogin] = useState(()=>{
+    const [isLogin, setIsLogin] = useState(() => {
         return localStorage.getItem('isLogin') === 'true' || false;
     });
     const [loading, setLoading] = useState(false);
@@ -40,9 +41,9 @@ export const AuthProvider = ({ children }) => {
         if (tokenData) localStorage.setItem('token', tokenData);
         localStorage.setItem('isLogin', 'true');
         localStorage.setItem('user', JSON.stringify(userData));
-        
+
     }
-    
+
     const handleLogin = async (credentials) => {
         setLoading(true);
         setError('');
@@ -50,26 +51,51 @@ export const AuthProvider = ({ children }) => {
             const data = await loginUser(credentials);
             saveAuthData(data);
             navigate('/');
-           await getCartData()
+            await getCartData()
         } catch (error) {
             setError(error.response?.data?.message || error.message || 'Login failed. Please try again.');
-        }finally {
+        } finally {
             setLoading(false);
         }
     }
-    
-   let handleRegister = async (credentials) => {
+
+    let handleRegister = async (credentials) => {
         setLoading(true);
         setError('');
         try {
             const data = await registerUser(credentials);
             saveAuthData(data);
             navigate('/');
-        }catch (error) {
+        } catch (error) {
             setError(error.response?.data?.message || error.message || 'Registration failed. Please try again.');
-        }finally {
+        } finally {
             setLoading(false);
         }
+    }
+
+    const handleGoogleLogin = useGoogleLogin({
+        onSuccess: async (tokenResponse) => {
+            setLoading(true);
+            try {
+                const data = await googleAuthService(tokenResponse.access_token)
+
+                if (data.token) {
+                    saveAuthData(data);
+                    navigate('/');
+                    await getCartData()
+                }
+            } catch (error) {
+                setError(error.response?.data?.message || error.message || 'Google login failed. Please try again.');
+            } finally {
+                setLoading(false);
+            }
+        },
+        onError: () => alert('Google login failed. Please try again.'),
+    })
+
+    function guest() {
+        navigate('/')
+        console.log("login as Guest Mode")
     }
 
     const logout = () => {
@@ -82,10 +108,10 @@ export const AuthProvider = ({ children }) => {
     }
 
     return (
-    <AuthContext.Provider value={{isLogin, user, token, loading, error, handleLogin, handleRegister, logout, setError}}>
-        {children}
-    </AuthContext.Provider>
-);
+        <AuthContext.Provider value={{ isLogin, user, token, loading, error, handleLogin, handleRegister, logout, setError, handleGoogleLogin, guest }}>
+            {children}
+        </AuthContext.Provider>
+    );
 }
 
 export const useAuth = () => useContext(AuthContext);

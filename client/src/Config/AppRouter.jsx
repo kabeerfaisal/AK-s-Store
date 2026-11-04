@@ -27,12 +27,12 @@ function AppRouter() {
 
         <Route element={<UserLayout />}>
           <Route path='/' element={<HomePage />} />
-      <Route element={<ProtectRouteComponent />}>
           <Route path='/shop' element={<Shop />} />
-          <Route path='/category/:id' element={<ProductsByCategory />} />
           <Route path='/about' element={<About />} />
           <Route path='/contact' element={<Contact />} />
           <Route path='/shop/product-detail/:id' element={<ProductDetail />} />
+      <Route element={<ProtectRouteComponent />}>
+          <Route path='/category/:id' element={<ProductsByCategory />} />
           <Route path='/checkout' element= {<Checkout/>} />
           <Route path='/order-success/:id' element= {<OrderSuccess/>} />
           <Route path='/orders' element= {<MyOrders/>} />

@@ -1,5 +1,5 @@
 import express from 'express';
-import { loginUser, registerUser } from '../controllers/authControllers.js';
+import { googleLogin, loginUser, registerUser } from '../controllers/authControllers.js';
 
 
 const authRoutes = express.Router();
@@ -7,5 +7,6 @@ const authRoutes = express.Router();
 
 authRoutes.post('/register', registerUser)
 authRoutes.post('/login', loginUser)
+authRoutes.post('/google', googleLogin)
 
 export default authRoutes

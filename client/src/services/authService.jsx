@@ -11,3 +11,8 @@ export async function registerUser(data) {
     let response = await api.post('/auth/register', data)
     return response.data
 }
+
+export const googleAuthService = async (accessToken) => {
+    const response = await api.post('/auth/google', { accessToken });
+    return response.data;
+};

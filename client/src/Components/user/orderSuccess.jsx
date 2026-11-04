@@ -28,6 +28,7 @@ const OrderSuccess = () => {
             };
             fetchOrderDetails();
         }
+        window.scrollTo(0, 0);
     }, [id, order]);
 
     if (loading) {
