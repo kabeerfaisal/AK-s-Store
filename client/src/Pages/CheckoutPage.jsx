@@ -52,11 +52,8 @@ const Checkout = () => {
       const response = await createOrder(orderPayload);
 
       if (response.success) {
-        // Clear local context state by re-fetching (backend clear ho chuka hai)
         await getCartData();
-        alert("Order placed successfully!");
         navigate(`/order-success/${response.order._id}`, { state: { order: response.order } });
-        // navigate('/')
       }
     } catch (error) {
       const msg = error.response?.data?.message || "Failed to place order. Please try again.";

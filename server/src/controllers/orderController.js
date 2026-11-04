@@ -191,19 +191,42 @@ export const updateOrder = async (req, res) => {
             });
         }
 
-        if (orderStatus) {
-            order.orderStatus = orderStatus;
-        }
-        if (paymentStatus) {
-            order.paymentStatus = paymentStatus;
+        const currentStatus = order.orderStatus ? order.orderStatus.toLowerCase() : '';
+
+        if (currentStatus === "delivered" || currentStatus === "cancelled") {
+            return res.status(400).json({
+                success: false,
+                message: `Order is already '${order.orderStatus}' and cannot be modified further.`,
+            });
         }
 
-        if (
-            orderStatus &&
-            orderStatus.toLowerCase() === 'delivered' &&
-            order.paymentMethod === 'COD'
-        ) {
-            order.paymentStatus = 'Paid'; 
+
+        if (orderStatus) {
+            const newStatusLower = orderStatus.toLowerCase();
+            order.orderStatus = orderStatus;
+
+            if (newStatusLower === "cancelled" && currentStatus !== "cancelled") {
+                const itemsList = order.orderItems || order.products || [];
+
+                for (const item of itemsList) {
+                    const productId = item.productId?._id || item.productId;
+                    const restockQty = Number(item.quantity || item.qty || 1);
+                    if (productId) {
+                        await Product.findByIdAndUpdate(productId, {
+                            $inc: { stock: restockQty }
+                        });
+                    }
+                }
+                order.paymentStatus = "Failed";
+            }
+            if (newStatusLower === "delivered") {
+                order.paymentStatus = "Paid";
+            }
+        }
+
+        const activeStatusLower = order.orderStatus.toLowerCase();
+        if (paymentStatus && activeStatusLower !== "cancelled" && activeStatusLower !== "delivered") {
+            order.paymentStatus = paymentStatus;
         }
 
         const updatedOrder = await order.save();
@@ -215,6 +238,7 @@ export const updateOrder = async (req, res) => {
         });
 
     } catch (error) {
+        console.log('Error updating order:', error);
         res.status(500).json({
             success: false,
             message: "Server Error: Unable to update order.",

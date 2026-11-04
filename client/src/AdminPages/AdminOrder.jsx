@@ -108,7 +108,7 @@ function AdminOrders() {
 
       {/* Toolbar: Search & Filter */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-xl border border-[#E8DFD1] shadow-sm">
-        
+
         {/* Search Input */}
         <div className="relative w-full sm:w-80">
           <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
@@ -174,7 +174,7 @@ function AdminOrders() {
                   return (
                     <React.Fragment key={order._id}>
                       <tr className="hover:bg-gray-50/80 transition-colors">
-                        
+
                         {/* Order ID */}
                         <td className="px-6 py-4 font-mono text-xs font-semibold text-[#8C1515]">
                           #{order._id.slice(-8).toUpperCase()}
@@ -220,17 +220,25 @@ function AdminOrders() {
 
                         {/* Order Status Selector */}
                         <td className="px-6 py-4">
-                          <select
-                            disabled={isUpdating}
-                            value={order.orderStatus}
-                            onChange={(e) => handleStatusChange(order._id, e.target.value)}
-                            className={`px-2.5 py-1 text-xs font-semibold rounded-full border capitalize cursor-pointer focus:outline-none ${getStatusBadge(order.orderStatus)}`}
-                          >
-                            <option value="Processing">Processing</option>
-                            <option value="Shipped">Shipped</option>
-                            <option value="Delivered">Delivered</option>
-                            <option value="Cancelled">Cancelled</option>
-                          </select>
+                          {(() => {
+                            const isFinalState = ['delivered', 'cancelled'].includes(order.orderStatus?.toLowerCase());
+
+                            return (
+                              <select
+                                disabled={isUpdating || isFinalState}
+                                value={order.orderStatus}
+                                onChange={(e) => handleStatusChange(order._id, e.target.value)}
+                                className={`px-2.5 py-1 text-xs font-semibold rounded-full border capitalize focus:outline-none transition-opacity ${isFinalState ? 'cursor-not-allowed opacity-60 bg-gray-100' : 'cursor-pointer'
+                                  } ${getStatusBadge(order.orderStatus)}`}
+                                title={isFinalState ? "Completed or Cancelled orders cannot be edited" : "Change order status"}
+                              >
+                                <option value="Processing">Processing</option>
+                                <option value="Shipped">Shipped</option>
+                                <option value="Delivered">Delivered</option>
+                                <option value="Cancelled">Cancelled</option>
+                              </select>
+                            );
+                          })()}
                         </td>
 
                         {/* Action Toggle Expand */}
@@ -250,7 +258,7 @@ function AdminOrders() {
                         <tr className="bg-[#FAF8F5]/60">
                           <td colSpan="8" className="px-6 py-5 border-t border-b border-[#E8DFD1]">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs">
-                              
+
                               {/* Address */}
                               <div className="bg-white p-4 rounded-lg border border-[#E8DFD1] space-y-1.5 shadow-sm">
                                 <h4 className="font-semibold text-gray-900 flex items-center gap-1.5 mb-2 text-xs uppercase tracking-wider">
