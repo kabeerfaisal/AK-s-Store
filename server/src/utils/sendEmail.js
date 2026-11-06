@@ -12,9 +12,9 @@ export const sendEmail = async ({ email, subject, message }) => {
         },
         tls: {
             rejectUnauthorized: false // Cloud server (Render) handshake fix
-        },
-        connectionTimeout: 10000,
-        socketTimeout: 10000
+        }
+        // connectionTimeout: 10000,
+        // socketTimeout: 10000
     })
 
     const mailOptions = {
