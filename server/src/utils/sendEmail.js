@@ -9,7 +9,9 @@ export const sendEmail = async ({email, subject, message}) => {
         auth: {
             user: process.env.EMAIL,
             pass: process.env.PASSWORD
-        }
+        },
+        connectionTimeout: 10000,
+        socketTimeout: 10000
     })
 
     const mailOptions = {
