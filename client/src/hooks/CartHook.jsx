@@ -38,6 +38,7 @@ export function CartProvider({ children }) {
             if (response.success) {
                 setCart(response.cart.products)
             }
+            console.log('response:', response)
         } catch (error) {
             console.log('error :', error)
         }
@@ -58,8 +59,9 @@ export function CartProvider({ children }) {
         try {
             let response = await removeProduct(removeData)
             console.log(response)
-            if (response.success) {
+            if (response.success == true) {
                 setCart(response.cart.products);
+                getCartData()
                 // toast
             }
 
@@ -88,7 +90,7 @@ export function CartProvider({ children }) {
 
         }
 
-    }, [cart])
+    }, [])
 
     const cartSubtotal = useMemo(() => {
         return cart.reduce((total, item) => total + item.price * item.quantity, 0);

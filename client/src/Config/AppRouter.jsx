@@ -18,12 +18,16 @@ import Checkout from '../Pages/CheckoutPage'
 import OrderSuccess from '../Components/user/orderSuccess'
 import MyOrders from '../Pages/MyOrders'
 import AdminOrders from '../AdminPages/AdminOrder'
+import ForgotPasswordPage from '../Pages/ForgetPassword'
+import ResetPasswordPage from '../Pages/resetPassword'
 
 function AppRouter() {
   return (
     <Routes>
       <Route path='/login' element={<LoginPage />} />
       <Route path='/register' element={<RegisterPage />} />
+      <Route path='/forgot-password' element={<ForgotPasswordPage />} />
+      <Route path='/reset-password' element={<ResetPasswordPage />} />
 
         <Route element={<UserLayout />}>
           <Route path='/' element={<HomePage />} />

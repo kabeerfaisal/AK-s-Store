@@ -5,7 +5,7 @@ import { FiX, FiShoppingCart, FiTrash2, FiPlus, FiMinus, FiArrowRight } from 're
 import { CartContext } from '../../hooks/CartHook';
 
 const CartDrawer = ({ isOpen, onClose }) => {
-  let { cart = [], cartSubtotal = 0, updateCart, removeProductData} = useContext(CartContext)
+  let { cart = [], cartSubtotal = 0, updateCart, removeProductData, getCartData } = useContext(CartContext)
   let navigate = useNavigate()
   const handleIncrement = (item) => {
     const productId = item.productId._id
@@ -18,7 +18,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
 
     updateCart({
       productId: productId,
-      quantity: item.quantity + 1,
+      quantity: ++item.quantity,
       selectedSize: item.selectedSize || ""
     })
   }
@@ -29,20 +29,29 @@ const CartDrawer = ({ isOpen, onClose }) => {
     if (item.quantity > 1) {
       updateCart({
         productId: productId,
-        quantity: item.quantity - 1,
+        quantity: --item.quantity,
         selectedSize: item.selectedSize || ""
       });
-    } else {
-      handleRemove(item);
+      console.log(item.quantity)
+
+      if (item.quantity < 1) {
+        console.log(item.quantity)
+        // handleRemove(item);
+      }
+
     }
+    // else {
+    //   console.log(item.quantity)
+    //   handleRemove(item);
+    // }
   };
 
-  const handleRemove = (item) => {
-     const productId = item.productId?._id;
-     removeProductData({
+  const handleRemove = async (item) => {
+    const productId = item.productId?._id;
+    removeProductData({
       productId: productId,
       selectedSize: item.selectedSize || ""
-     })
+    })
   }
 
   return (
@@ -89,15 +98,15 @@ const CartDrawer = ({ isOpen, onClose }) => {
                     cart.map((item, index) => {
 
                       const product = typeof item.productId === 'object' && item.productId !== null ? item.productId : {};
-                    const title = product.title || item.title || 'Product';
-                    const category = product.category || item.category || '';
-                    const images = product.images || item.images || [];
+                      const title = product.title || item.title || 'Product';
+                      const category = product.category || item.category || '';
+                      const images = product.images || item.images || [];
 
-                    const imageUrl = images.length > 0
-                      ? (images.find(img => img.isPrimary)?.url || images[0]?.url || (typeof images[0] === 'string' ? images[0] : ''))
-                      : 'https://via.placeholder.com/150';
+                      const imageUrl = images.length > 0
+                        ? (images.find(img => img.isPrimary)?.url || images[0]?.url || (typeof images[0] === 'string' ? images[0] : ''))
+                        : 'https://via.placeholder.com/150';
 
-                    const itemKey = `${item._id || index}-${item.selectedSize}`;
+                      const itemKey = `${item._id || index}-${item.selectedSize}`;
 
                       return (
                         <div key={itemKey} className="flex items-center space-x-4 bg-[#120404]/60 p-4 rounded-xl border border-[#EAD196]/10 relative group">
@@ -118,7 +127,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
                                   <FiMinus className="h-3 w-3" />
                                 </button>
                                 <span className="px-2.5 text-xs font-bold text-[#EEEEEE]">{item.quantity}</span>
-                                <button onClick={() =>handleIncrement(item)} className="p-1 text-[#EEEEEE]/70 hover:text-[#EAD196]" aria-label="Increase quantity">
+                                <button onClick={() => handleIncrement(item)} className="p-1 text-[#EEEEEE]/70 hover:text-[#EAD196]" aria-label="Increase quantity">
                                   <FiPlus className="h-3 w-3" />
                                 </button>
                               </div>

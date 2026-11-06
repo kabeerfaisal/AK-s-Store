@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { googleAuthService, loginUser, registerUser } from "../services/authService";
+import { forgetPassword, googleAuthService, loginUser, registerUser, resetPassword } from "../services/authService";
 import { CartContext } from "./CartHook";
 import { useGoogleLogin } from "@react-oauth/google";
 
@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [message, setMessage] = useState('');
 
     const saveAuthData = (data) => {
         const userData = data.user || {
@@ -93,6 +94,66 @@ export const AuthProvider = ({ children }) => {
         onError: () => alert('Google login failed. Please try again.'),
     })
 
+    const handleForgetPassword = async (email) => {
+        setLoading(true);
+        setError('');
+        try {
+            const data = await forgetPassword(email);
+
+            if (data.success) {
+                setMessage(data.message || 'Password reset email sent. Please check your inbox.');
+            }
+
+
+        } catch (error) {
+
+            setError(error.response?.data?.message || error.message || 'Failed to send password reset email. Please try again.');
+
+        } finally {
+            setError('');
+            setLoading(false);
+        }
+    }
+
+    const handleResetPassword = async ({token, newPassword, confirmPassword}) => {
+        setLoading(true);
+        setError('');
+
+        
+
+        try {
+            if(!token) {
+            setError("Reset token is missing or invalid.");
+            return false;
+        }
+        console.log(newPassword)
+
+        if (newPassword !== confirmPassword) {
+            setError("Passwords do not match.");
+            return false;
+        }
+
+
+        if (newPassword.length < 6) {
+            setError("Password must be at least 6 characters long.");
+            return false;
+        }
+
+
+
+            const data = await resetPassword(token, newPassword);
+            if (data.success) {
+                setMessage(data.message || 'Password reset successfully.');
+                return true;
+            }
+        } catch (error) {
+            console.log(error)
+            setError(error.response?.data?.message || error.message || 'Failed to reset password. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    }
+
     function guest() {
         navigate('/')
         console.log("login as Guest Mode")
@@ -108,7 +169,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ isLogin, user, token, loading, error, handleLogin, handleRegister, logout, setError, handleGoogleLogin, guest }}>
+        <AuthContext.Provider value={{ isLogin, user, token, loading, error, handleLogin, handleRegister, handleForgetPassword, logout, setError, handleGoogleLogin, guest, message, setMessage, handleResetPassword }}>
             {children}
         </AuthContext.Provider>
     );

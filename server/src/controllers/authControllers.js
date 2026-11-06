@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import generateToken from "../utils/GenrateTokens.js";
 import axios from "axios";
 import { sendEmail } from "../utils/sendEmail.js";
+import jwt from 'jsonwebtoken';
 
 export let registerUser = async (req, res) => {
     try {
@@ -118,7 +119,7 @@ export const forgotPassword = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        const resetToken = generateToken(user._id, 'password_reset', '15m')
+        const resetToken = generateToken(user._id.toString(), 'password_reset', '15m')
 
         user.resetPasswordToken = resetToken;
         await user.save();
@@ -177,10 +178,19 @@ export const resetPassword = async (req, res) => {
                 });
         }
 
+
+
         let decoded;
         try {
             decoded = jwt.verify(token, process.env.JWT_SECRET);
+            const user = await UserModel.findById(decoded.id);
+
+            if (!user || user.resetPasswordToken?.toString().trim() !== token.toString().trim()) {
+                return res.status(400).json({ message: "Invalid or expired reset token." });
+            }
+
         } catch (err) {
+            console.error("Token verification error:", err);
             return res.status(400).json({ message: "Password reset link is invalid or has expired. Please request a new one." });
         }
 

@@ -1,13 +1,11 @@
 import React, { useContext, useState } from 'react';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
-import { FaGithub, FaUserCircle } from "react-icons/fa";
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/AuthHook';
 import AuthComponent from '../Components/user/AuthComponent';
 
 function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
-  let Navigate = useNavigate()
   const {handleLogin, loading, error, user} = useAuth();
 
   function handleSubmit(e) {
@@ -113,9 +111,9 @@ function LoginPage() {
                   </label>
                 </div>
                 <div className="text-sm">
-                  <a href="#forgot-password" className="font-semibold text-[#D97706] hover:text-[#B45309] transition-colors">
+                  <Link to="/forgot-password" className="font-semibold text-[#D97706] hover:text-[#B45309] transition-colors">
                     Forgot password?
-                  </a>
+                  </Link>
                 </div>
               </div>
 
