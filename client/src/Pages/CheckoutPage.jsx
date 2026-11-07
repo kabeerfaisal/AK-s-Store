@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { FiLock, FiTruck, FiCreditCard, FiCheckCircle, FiArrowLeft, FiShoppingBag } from 'react-icons/fi';
 import { CartContext } from '../hooks/CartHook';
 import { createOrder } from '../services/orderServices';
+import { useEffect } from 'react';
 
 
 const Checkout = () => {
@@ -79,9 +80,9 @@ const Checkout = () => {
     );
   }
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  // }, []);
 
   return (
     <div className="min-h-screen bg-[#120404] text-[#EEEEEE] py-10 px-4 sm:px-6 lg:px-8 font-sans">

@@ -1,6 +1,7 @@
 import Cart from "../models/CartModel.js";
 import Order from "../models/orderModel.js";
 import Product from "../models/ProductModels.js";
+import { sendEmail } from "../utils/sendEmail.js";
 
 
 export const createOrder = async (req, res) => {
