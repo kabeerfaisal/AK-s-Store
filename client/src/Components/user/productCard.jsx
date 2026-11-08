@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FiShoppingCart, FiStar } from 'react-icons/fi';
 import { CartContext } from '../../hooks/CartHook';
 import { useAuth } from '../../hooks/AuthHook';
+import RequireLogin from '../RequiredLogin';
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
@@ -37,6 +38,15 @@ const ProductCard = ({ product }) => {
       });
     }
   };
+
+  const handleCart = (e) => {
+     e.stopPropagation(); 
+  if (!isLogin) {
+    navigate('/required-login');
+  } else {
+    handleQuickAdd();
+  }
+};
 
   return (
     <div
@@ -82,7 +92,7 @@ const ProductCard = ({ product }) => {
         {/* Quick Add Button */}
         {!isOutOfStock && (
           <button
-            onClick={handleQuickAdd}
+            onClick={(e)=>handleCart(e)}
             className="absolute bottom-2.5 right-2.5 bg-[#8C1515] hover:bg-[#a81a1a] text-white p-2 sm:px-3 sm:py-2 rounded-lg border border-[#F3C97A]/30 shadow-lg flex items-center justify-center gap-1.5 text-xs font-semibold opacity-100 sm:opacity-0 sm:translate-y-2 sm:group-hover:opacity-100 sm:group-hover:translate-y-0 transition-all duration-300 active:scale-95 z-10"
           >
             <FiShoppingCart className="h-3.5 w-3.5 sm:h-4 sm:w-4" />

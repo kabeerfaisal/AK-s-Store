@@ -20,6 +20,7 @@ import MyOrders from '../Pages/MyOrders'
 import AdminOrders from '../AdminPages/AdminOrder'
 import ForgotPasswordPage from '../Pages/ForgetPassword'
 import ResetPasswordPage from '../Pages/resetPassword'
+import RequireLogin from '../Components/RequiredLogin'
 
 function AppRouter() {
   return (
@@ -29,22 +30,25 @@ function AppRouter() {
       <Route path='/forgot-password' element={<ForgotPasswordPage />} />
       <Route path='/reset-password' element={<ResetPasswordPage />} />
 
-        <Route element={<UserLayout />}>
-          <Route path='/' element={<HomePage />} />
-          <Route path='/shop' element={<Shop />} />
-          <Route path='/about' element={<About />} />
-          <Route path='/contact' element={<Contact />} />
-          <Route path='/shop/product-detail/:id' element={<ProductDetail />} />
-      <Route element={<ProtectRouteComponent />}>
+
+      <Route element={<UserLayout />}>
+        <Route path='/' element={<HomePage />} />
+        <Route path='/shop' element={<Shop />} />
+        <Route path='/about' element={<About />} />
+        <Route path='/contact' element={<Contact />} />
+        <Route path='/shop/product-detail/:id' element={<ProductDetail />} />
+        <Route path='/required-login' element={<RequireLogin />} />
+
+        <Route element={<ProtectRouteComponent />}>
           <Route path='/category/:id' element={<ProductsByCategory />} />
-          <Route path='/checkout' element= {<Checkout/>} />
-          <Route path='/order-success/:id' element= {<OrderSuccess/>} />
-          <Route path='/orders' element= {<MyOrders/>} />
+          <Route path='/checkout' element={<Checkout />} />
+          <Route path='/order-success/:id' element={<OrderSuccess />} />
+          <Route path='/orders' element={<MyOrders />} />
 
         </Route>
       </Route>
 
-      <Route element={<AdminProtectedRoute/>}>
+      <Route element={<AdminProtectedRoute />}>
         <Route element={<AdminLayout />}>
           <Route path='/admin' element={<AdminDashboard />} />
           <Route path='/admin/products' element={<AdminProductPage />} />

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useLocation, Link, useParams } from 'react-router-dom';
+import { useLocation, Link, useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   FiShoppingCart,
@@ -14,6 +14,7 @@ import {
 import { CartContext } from '../hooks/CartHook';
 
 function ProductDetail() {
+  const navigate = useNavigate()
   const { id } = useParams();
   const { state } = useLocation();
   const { addTocart } = useContext(CartContext);
@@ -80,12 +81,12 @@ function ProductDetail() {
       <div className="min-h-screen bg-[#FAF8F5] flex flex-col items-center justify-center p-6 text-center">
         <h2 className="text-2xl font-bold text-stone-900 mb-2">Product Not Found</h2>
         <p className="text-sm text-stone-500 mb-6">The item you are looking for is unavailable or link has expired.</p>
-        <Link
-          to="/shop"
+        <button
+          onClick={()=>navigate(-1)}
           className="inline-flex items-center gap-2 bg-[#8C1515] text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-[#701010] transition-colors"
         >
           <FiArrowLeft /> Return to Shop
-        </Link>
+        </button>
       </div>
     );
   }
@@ -121,12 +122,12 @@ function ProductDetail() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-6 flex items-center justify-between"
         >
-          <Link
-            to="/shop"
+          <button
+            onClick={()=>navigate(-1)}
             className="inline-flex items-center gap-2 text-stone-500 hover:text-[#8C1515] transition-colors text-xs sm:text-sm font-medium uppercase tracking-wider"
           >
             <FiArrowLeft className="h-4 w-4" /> Back to Products
-          </Link>
+          </button>
 
           <span className="text-xs text-stone-400 font-mono">
             SKU: {product.sku || 'N/A'}

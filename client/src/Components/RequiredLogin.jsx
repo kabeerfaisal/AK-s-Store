@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaLock } from "react-icons/fa";
 import { motion } from 'framer-motion';
@@ -6,6 +6,9 @@ import Navbar from './user/NavBar';
 import Footer from './user/Footer';
 
 const RequireLogin = () => {
+      useEffect(() => {
+        window.scrollTo(0, 0);
+      }, []);
     return (
         <>
         <Navbar/>
@@ -26,7 +29,7 @@ const RequireLogin = () => {
                     Login Required
                 </h2>
                 <p className="text-gray-600 mb-8">
-                    To view our Shop and About Us pages, you need to be a registered member. Please log in or create an account to continue.
+                   You need to be a registered member. Please log in or create an account to continue.
                 </p>
 
                 {/* Action Buttons */}
