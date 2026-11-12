@@ -3,6 +3,8 @@ import { BrowserRouter } from 'react-router-dom'
 import AppRouter from './Config/AppRouter'
 import { CartProvider } from './hooks/CartHook'
 import { AuthProvider } from './hooks/AuthHook'
+import { GoogleOAuthProvider } from '@react-oauth/google'
+import { CustomerProvider } from './hooks/customerHook'
 
 
 function App() {
@@ -11,11 +13,13 @@ function App() {
   return (
     <>
       <BrowserRouter>
-          <CartProvider>
-            <AuthProvider>
-                <AppRouter />
-            </AuthProvider>
-          </CartProvider>
+        <CartProvider>
+          <AuthProvider>
+            <CustomerProvider>
+              <AppRouter />
+            </CustomerProvider>
+          </AuthProvider>
+        </CartProvider>
       </BrowserRouter>
     </>
   )

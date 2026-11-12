@@ -27,7 +27,7 @@ const ProductCard = ({ product }) => {
   };
 
   const handleQuickAdd = (e) => {
-    e.stopPropagation();
+    // e.stopPropagation();
 
     const defaultSize = product.sizes && product.sizes.length > 0 ? product.sizes[0] : '';
     if (!isOutOfStock && isLogin) {

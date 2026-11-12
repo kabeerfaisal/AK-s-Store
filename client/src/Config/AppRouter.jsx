@@ -21,6 +21,7 @@ import AdminOrders from '../AdminPages/AdminOrder'
 import ForgotPasswordPage from '../Pages/ForgetPassword'
 import ResetPasswordPage from '../Pages/resetPassword'
 import RequireLogin from '../Components/RequiredLogin'
+import AdminCustomers from '../AdminPages/adminCustomer'
 
 function AppRouter() {
   return (
@@ -53,6 +54,7 @@ function AppRouter() {
           <Route path='/admin' element={<AdminDashboard />} />
           <Route path='/admin/products' element={<AdminProductPage />} />
           <Route path='/admin/orders' element={<AdminOrders />} />
+          <Route path='/admin/customers' element={<AdminCustomers />} />
 
         </Route>
       </Route>
