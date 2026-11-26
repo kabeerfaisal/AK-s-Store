@@ -1,6 +1,7 @@
 import Cart from "../models/CartModel.js";
 import Order from "../models/orderModel.js";
 import Product from "../models/ProductModels.js";
+import { orderCancelledTemplate, orderInvoiceTemplate } from "../utils/emailTemplates.js";
 import { sendEmail } from "../utils/sendEmail.js";
 
 
@@ -71,6 +72,14 @@ export const createOrder = async (req, res) => {
 
         }
 
+        if (errors.length > 0) {
+            return res.status(400).json({
+                success: false,
+                message: errors[0],
+                errors
+            });
+        }
+
         //shipping fee and total amount calculation
         const shippingFee = itemsPrice > 5000 ? 0 : 250;
         const totalAmount = itemsPrice + shippingFee;
@@ -95,6 +104,15 @@ export const createOrder = async (req, res) => {
 
         cart.products = [];
         await cart.save();
+
+        if (req.user?.email) {
+            const shortId = order._id.toString().slice(-8).toUpperCase();
+            sendEmail({
+                email: req.user.email,
+                subject: `Order Confirmed & Invoice #${shortId} — AK'S STORE`,
+                message: orderInvoiceTemplate(req.user, order),
+            }).catch(err => console.error("Order Invoice Email Failed:", err.message));
+        }
 
         res.status(201).json({
             success: true,
@@ -232,6 +250,28 @@ export const updateOrder = async (req, res) => {
 
         const updatedOrder = await order.save();
 
+        const recipientEmail = order.user?.email;
+        const recipientName = order.user?.name || order.user?.fullname || order.shippingAddress?.fullName;
+
+        if (statusChanged && recipientEmail) {
+            const shortId = updatedOrder._id.toString().slice(-8).toUpperCase();
+            const newStatusLower = updatedOrder.orderStatus.toLowerCase();
+
+            if (newStatusLower === "cancelled") {
+                sendEmail({
+                    email: recipientEmail,
+                    subject: `Order Cancelled #${shortId} — AK'S STORE`,
+                    message: orderCancelledTemplate(recipientName, updatedOrder, 'admin'),
+                }).catch(err => console.error("Admin Cancel Email Failed:", err.message));
+            } else if (["shipped", "delivered"].includes(newStatusLower)) {
+                sendEmail({
+                    email: recipientEmail,
+                    subject: `Order #${shortId} is ${updatedOrder.orderStatus} — AK'S STORE`,
+                    message: orderStatusTemplate(recipientName, updatedOrder, updatedOrder.orderStatus),
+                }).catch(err => console.error("Order Status Email Failed:", err.message));
+            }
+        }
+
         res.status(200).json({
             success: true,
             message: `Order status updated to '${updatedOrder.orderStatus}'.`,
@@ -243,6 +283,67 @@ export const updateOrder = async (req, res) => {
         res.status(500).json({
             success: false,
             message: "Server Error: Unable to update order.",
+            error: error.message,
+        });
+    }
+}
+
+export const cancelMyOrder = async (req, res) => {
+    try {
+        const order = await Order.findOne({ _id: req.params.id, user: req.user._id })
+
+        if (!order) {
+            return res.status(404).json({
+                success: false,
+                message: "Order not found.",
+            });
+        }
+
+        const currentStatus = (order.orderStatus || 'pending').toLowerCase()
+
+        const cancellableStatuses = ['pending', 'processing']
+
+        if (!cancellableStatuses.includes(currentStatus)) {
+            return res.status(400).json({
+                success: false,
+                message: `Order cannot be cancelled once it is '${order.orderStatus}'.`,
+            });
+        }
+
+        const itemsList = order.products || [];
+        for (const item of itemsList) {
+            const productId = item.productId?._id || item.productId;
+            const restockQty = Number(item.quantity || 1);
+            if (productId) {
+                await Product.findByIdAndUpdate(productId, {
+                    $inc: { stock: restockQty }
+                });
+            }
+        }
+
+        order.orderStatus = "Cancelled";
+        order.paymentStatus = "Failed";
+        const cancelledOrder = await order.save();
+
+        if (req.user?.email) {
+            const shortId = order._id.toString().slice(-8).toUpperCase();
+            sendEmail({
+                email: req.user.email,
+                subject: `Order Cancelled #${shortId} — AK'S STORE`,
+                message: orderCancelledTemplate(req.user.name, cancelledOrder, 'customer'),
+            }).catch(err => console.error("Cancel Email Failed:", err.message));
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Order cancelled successfully.",
+            order: cancelledOrder,
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Server Error: Unable to cancel order.",
             error: error.message,
         });
     }
