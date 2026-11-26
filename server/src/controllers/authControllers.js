@@ -4,6 +4,7 @@ import generateToken from "../utils/GenrateTokens.js";
 import axios from "axios";
 import { sendEmail } from "../utils/sendEmail.js";
 import jwt from 'jsonwebtoken';
+import { loginAlertTemplate, registerAlertTemplate } from "../utils/emailTemplates.js";
 
 export let registerUser = async (req, res) => {
     try {
@@ -26,6 +27,13 @@ export let registerUser = async (req, res) => {
         if (!user) {
             return res.status(400).json({ message: "Please Enter Valid Data" });
         }
+
+        sendEmail({
+            email: user.email,
+            subject: "Welcome To Our Family  — AK'S STORE",
+            message: registerAlertTemplate(user, "Email & Password"),
+        }).catch(err => console.error("Registeration Alert Email Failed:", err.message));
+
         res.status(201).json({ message: "User registered successfully", user, token: generateToken(user._id) });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -58,6 +66,12 @@ export const loginUser = async (req, res) => {
         if (!isMatch) {
             return res.status(400).json({ message: "Invalid credentials" });
         }
+
+        sendEmail({
+            email: user.email,
+            subject: "New Login Alert — AK'S STORE",
+            message: loginAlertTemplate(user, "Email & Password"),
+        }).catch(err => console.error("Login Alert Email Failed:", err.message));
 
         res.status(200).json({ message: "Login successful", user, token: generateToken(user._id) });
 
@@ -95,6 +109,12 @@ export const googleLogin = async (req, res) => {
             user.googleId = googleId;
             await user.save();
         }
+
+        sendEmail({
+            email: user.email,
+            subject: "New Login Alert — AK'S STORE",
+            message: loginAlertTemplate(user, "Google OAuth"),
+        }).catch(err => console.error("Google Login Alert Email Failed:", err.message));
 
         res.status(200).json({
             message: "Google login successful",

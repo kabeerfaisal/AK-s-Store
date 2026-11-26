@@ -130,6 +130,28 @@ export const orderCancelledTemplate = (customerName, order, cancelledBy = 'custo
   });
 };
 
+export const registerAlertTemplate = (user, loginMethod = 'Email & Password') => {
+  const timestamp = new Date().toLocaleString('en-PK', {
+    timeZone: 'Asia/Karachi',
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  });
+
+  return renderLayout({
+    subtitle: 'Account Created Successfully',
+    customerName: user?.name,
+    body: `
+      <p style="${STYLES.text}">Welcome to the <strong>AK'S STORE</strong> family! Your account is all set—start exploring our latest collection anytime.</p>
+      ${renderInfoCard({
+        Method: loginMethod,
+        'Time (PKT)': timestamp,
+      })}
+    `,
+    footerNote: 'You can now log in anytime to browse our latest collection, track your orders, and enjoy a faster checkout. If you did not create this account, please contact our support team immediately.',
+
+  });
+};
+
 export const loginAlertTemplate = (user, loginMethod = 'Email & Password') => {
   const timestamp = new Date().toLocaleString('en-PK', {
     timeZone: 'Asia/Karachi',
