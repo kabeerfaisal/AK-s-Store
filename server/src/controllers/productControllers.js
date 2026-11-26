@@ -1,5 +1,18 @@
 import mongoose from "mongoose";
 import Product from "../models/ProductModels.js"
+import { deleteFromCloudinary, uploadToCloudinary } from "../config/cloudinary.js";
+
+const parseField = (field, fallback = []) => {
+    if (!field) return fallback
+    if (typeof field === "string") {
+        try {
+            return JSON.parse(field)
+        } catch {
+            return fallback
+        }
+    }
+    return field
+}
 
 export const getProductById = async (req, res) => {
     try {
@@ -12,7 +25,7 @@ export const getProductById = async (req, res) => {
             })
         }
         const product = await Product.findById(id).lean()
-        
+
         if (!product) {
             return res.status(404).json({
                 success: false,
@@ -115,7 +128,6 @@ export const createProduct = async (req, res) => {
             stock,
             category,
             collectionName,
-            images,
             sizes,
             colors,
             isFeatured,
@@ -126,27 +138,49 @@ export const createProduct = async (req, res) => {
             category: category
         });
 
-        const requireFields = { title, description, price, stock, category, images }
+        const requireFields = { title, description, price, stock, category}
 
         if (Object.values(requireFields).some(val => val === undefined || val === null || val === "")) {
+
             return res.status(400).json({ message: 'Please provide all required fields' })
+
         } else if (existingProduct) {
+
             return res.status(400).json({
+                success: false,
                 message: "Product Already Exists"
             })
+
+        } else if (!req.files || req.files.length === 0) {
+
+            return res.status(400).json({
+                success: false,
+                message: 'Please upload at least one product image'
+            });
+
         } else {
+
+            const uploadImages = await Promise.all(
+                req.files.map((file) => uploadToCloudinary(file.buffer))
+            )
+
+            const formatImages = uploadImages.map((img, index) => ({
+                url: img.url,
+                public_id: img.public_id,
+                isPrimary: index === 0
+            }))
 
             const product = new Product({
                 title,
                 description,
-                price,
-                discountPrice: discountPrice || 0,
-                stock,
+                price: Number(price),
+                discountPrice: discountPrice ? Number(discountPrice) : 0,
+                stock: Number(stock),
                 category,
                 collectionName: collectionName || null,
-                images,
-                sizes: sizes || [],
-                colors: colors || [],
+                images: formatImages,
+                sizes: parseField(sizes, []),
+                colors: parseField(colors, []),
                 isFeatured: isFeatured || false
             })
 
@@ -171,6 +205,50 @@ export const updateProduct = async (req, res) => {
         if (!product) {
             return res.status(404).json({ message: "Product Not Found" })
         }
+
+        let finalImages = product.images
+
+        if (req.body.existingImages !== undefined) {
+            const keptImages = parseField(req.body.existingImages, [])
+            const keptIds = new Set(keptImages.map(img => img.public_id))
+
+            const removeImages = product.images.filter(
+                img => img.public_id && !keptIds.has(img.public_id)
+            )
+
+            if (removeImages.length > 0) {
+                await Promise.all(removeImages.map(img => deleteFromCloudinary(img.public_id)))
+            }
+            finalImages = keptImages
+        }
+
+        if (req.files && req.files.length > 0) {
+
+            const uploadedNew = await Promise.all(
+                req.files.map((file) => uploadToCloudinary(file.buffer))
+            )
+
+            const formatNew = uploadedNew.map((img) => ({
+                url: img.url,
+                public_id: img.public_id,
+                isprimary: false
+            }))
+
+            finalImages = [...finalImages, ...formatNew]
+        }
+
+        if (finalImages.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Product must have at least one image"
+            });
+        }
+
+        if (!finalImages.some(img => img.isPrimary)) {
+            finalImages[0].isPrimary = true;
+        }
+
+
         product.title = req.body.title || product.title;
         product.description = req.body.description || product.description;
         product.price = req.body.price !== undefined ? req.body.price : product.price;
@@ -178,9 +256,9 @@ export const updateProduct = async (req, res) => {
         product.stock = req.body.stock !== undefined ? req.body.stock : product.stock;
         product.category = req.body.category || product.category;
         product.collectionName = req.body.collectionName !== undefined ? req.body.collectionName : product.collectionName;
-        product.images = req.body.images || product.images;
-        product.sizes = req.body.sizes || product.sizes;
-        product.colors = req.body.colors || product.colors;
+        product.images = finalImages
+        product.sizes =req.body.sizes !== undefined ? parseField(req.body.sizes, []) : product.sizes;
+        product.colors = product.colors = req.body.colors !== undefined ? parseField(req.body.colors, []) : product.colors;
         product.isFeatured = req.body.isFeatured !== undefined ? req.body.isFeatured : product.isFeatured;
         product.status = req.body.status || product.status;
 
@@ -205,6 +283,12 @@ export const deleteProduct = async (req, res) => {
         const product = await Product.findById(req.params.id)
         if (!product) {
             return res.status(404).json({ message: 'Product not found' });
+        }
+
+        if (product.images && product.images.length > 0) {
+            await Promise.all(
+                product.images.map((img) => deleteFromCloudinary(img.public_id))
+            )
         }
 
         await product.deleteOne();

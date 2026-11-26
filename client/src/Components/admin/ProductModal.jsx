@@ -4,20 +4,8 @@ import { addProduct, updateProduct } from '../../services/Admin_Services/AdminPr
 
 import { Loader2, X } from 'lucide-react';
 import GetProductsByFilter from '../../hooks/GetProductsByFilter';
-
-// Form State
-const initialForm = {
-    title: '',
-    description: '',
-    price: '',
-    discountPrice: '',
-    stock: '',
-    category: 'Apparel',
-    collectionName: '',
-    imageUrl: '',
-    sizes: [],
-    isFeatured: false,
-};
+import ProductImageUploader from './ProductImageUploader';
+import { useProductForm } from '../../hooks/productFormHook';
 
 const CATEGORIES = [
     'Apparel', 'Bags',
@@ -29,277 +17,238 @@ const AVAILABLE_SIZES = [
     'XL', 'XXL', 'Standard'
 ];
 
-function ProductModal({ isOpen, onCLose, editingProduct, onSuccess }) {
-    // const { refetch } = GetProductsByFilter()
-    const [formData, setFormData] = useState(initialForm);
-    const [saving, setSaving] = useState(false);
-    const [error, setError] = useState('');
-
-    useEffect(() => {
-        if (editingProduct) {
-            setFormData({
-                title: editingProduct.title || '',
-                description: editingProduct.description || '',
-                price: editingProduct.price || '',
-                discountPrice: editingProduct.discountPrice || '',
-                stock: editingProduct.stock ?? '',
-                category: editingProduct.category || 'Apparel',
-                collectionName: editingProduct.collectionName || '',
-                imageUrl: editingProduct.images?.[0]?.url || '',
-                sizes: editingProduct.sizes || [],
-                isFeatured: editingProduct.isFeatured || false,
-            });
-        } else {
-            setFormData(initialForm);
-        }
-        setError('');
-    }, [editingProduct, isOpen]);
-
+function ProductModal({ isOpen, onClose, editingProduct, onSuccess }) {
+    const {
+        formData,
+        existingImages,
+        previews,
+        saving,
+        error,
+        totalImagesCount,
+        updateField,
+        toggleSize,
+        addImages,
+        removeExistingImage,
+        removeNewImage,
+        handleSubmit,
+    } = useProductForm({
+        isOpen,
+        editingProduct,
+        onSuccess,
+        onClose
+    });
 
     if (!isOpen) return null
 
-    // Toggle Size
-    const handleSizeToggle = (sz) => {
-        setFormData(prev => ({
-            ...prev,
-            sizes: prev.sizes.includes(sz) ? prev.sizes.filter(s => s !== sz) : [...prev.sizes, sz]
-        }));
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setSaving(true)
-        setError('')
-        try {
-            const productData = {
-                ...formData,
-                price: Number(formData.price),
-                discountPrice: Number(formData.discountPrice) || 0,
-                stock: Number(formData.stock),
-                status: Number(formData.stock) > 0 ? 'active' : 'out_of_stock',
-                images: [{ url: formData.imageUrl || 'https://placeholder.com' }]
-            }
-            let response
-            if (editingProduct?._id) {
-                response = await updateProduct(editingProduct._id, productData)
-            } else {
-                response = await addProduct(productData)
-
-            }
-
-            if (response?.success || response) {
-                onCLose();
-                setFormData(initialForm);
-                // 🔥 Call parent refetch to update table without page reload
-                if (typeof onSuccess === 'function') {
-                    await onSuccess();
-                }
-            }
-
-            // console.log(response)
-            // onCLose()
-            // setFormData(initialForm)
-            // await refetch()
-        } catch (error) {
-            setError(error.message);
-        } finally {
-            setSaving(false)
-        }
-    };
 
 
 
     return (
         <>
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs overflow-y-auto">
-                <div className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl border border-[#E8DFD1] my-8 relative">
+<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs overflow-y-auto">
+            <div className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl border border-[#E8DFD1] my-8 relative max-h-[90vh] overflow-y-auto">
 
-                    {/* Modal Header */}
-                    <div className="flex items-center justify-between border-b border-[#E8DFD1] pb-4">
-                        <div>
-                            <h2 className="text-lg font-bold text-gray-900">
-                                {editingProduct ? 'Edit Product Details' : 'Add Luxury Product'}
-                            </h2>
-                            <p className="text-xs text-gray-500 mt-0.5">SKU and Slug are auto-generated by the backend.</p>
-                        </div>
-                        <button onClick={onCLose} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg">
-                            <X className="h-5 w-5" />
-                        </button>
+                {/* Header */}
+                <div className="flex items-center justify-between border-b border-[#E8DFD1] pb-4">
+                    <div>
+                        <h2 className="text-lg font-bold text-gray-900">
+                            {editingProduct ? 'Edit Product Details' : 'Add Luxury Product'}
+                        </h2>
+                        <p className="text-xs text-gray-500 mt-0.5">
+                            SKU and Slug are auto-generated by the backend.
+                        </p>
+                    </div>
+                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg">
+                        <X className="h-5 w-5" />
+                    </button>
+                </div>
+
+                {error && (
+                    <div className="mt-4 p-3 rounded-lg bg-red-50 border border-red-200 text-xs font-medium text-red-700">
+                        {error}
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+                    {/* Title */}
+                    <div>
+                        <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
+                            Product Title *
+                        </label>
+                        <input
+                            type="text"
+                            required
+                            placeholder="e.g. Royal Silk Velvet Gown"
+                            value={formData.title}
+                            onChange={(e) => updateField('title', e.target.value)}
+                            className="w-full rounded-lg border border-[#E8DFD1] bg-[#FAF8F5] p-2.5 text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#8C1515]"
+                        />
                     </div>
 
-                    {error && (
-                        <div className="mt-4 p-3 rounded-lg bg-red-50 border border-red-200 text-xs font-medium text-red-700">
-                            {error}
-                        </div>
-                    )}
-
-                    {/* Modal Form */}
-                    <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-
-                        {/* Title */}
+                    {/* Category & Collection */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">Product Title *</label>
+                            <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
+                                Category *
+                            </label>
+                            <select
+                                value={formData.category}
+                                onChange={(e) => updateField('category', e.target.value)}
+                                className="w-full rounded-lg border border-[#E8DFD1] bg-[#FAF8F5] p-2.5 text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#8C1515]"
+                            >
+                                {CATEGORIES.map((cat) => (
+                                    <option key={cat} value={cat}>{cat}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
+                                Collection Name
+                            </label>
                             <input
                                 type="text"
-                                required
-                                placeholder="e.g. Royal Silk Velvet Gown"
-                                value={formData.title}
-                                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                placeholder="e.g. Winter Edition 2026"
+                                value={formData.collectionName}
+                                onChange={(e) => updateField('collectionName', e.target.value)}
                                 className="w-full rounded-lg border border-[#E8DFD1] bg-[#FAF8F5] p-2.5 text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#8C1515]"
                             />
                         </div>
+                    </div>
 
-                        {/* Category & Collection */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">Category *</label>
-                                <select
-                                    value={formData.category}
-                                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                    className="w-full rounded-lg border border-[#E8DFD1] bg-[#FAF8F5] p-2.5 text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#8C1515]"
-                                >
-                                    {CATEGORIES.filter(c => c !== 'All').map(cat => (
-                                        <option key={cat} value={cat}>{cat}</option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            <div>
-                                <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">Collection Name</label>
-                                <input
-                                    type="text"
-                                    placeholder="e.g. Winter Edition 2026"
-                                    value={formData.collectionName}
-                                    onChange={(e) => setFormData({ ...formData, collectionName: e.target.value })}
-                                    className="w-full rounded-lg border border-[#E8DFD1] bg-[#FAF8F5] p-2.5 text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#8C1515]"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Price, Discount Price, Stock */}
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <div>
-                                <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">Price ($) *</label>
-                                <input
-                                    type="number"
-                                    required
-                                    min="0"
-                                    placeholder="1200"
-                                    value={formData.price}
-                                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                                    className="w-full rounded-lg border border-[#E8DFD1] bg-[#FAF8F5] p-2.5 text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#8C1515]"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">Discount Price ($)</label>
-                                <input
-                                    type="number"
-                                    min="0"
-                                    placeholder="950"
-                                    value={formData.discountPrice}
-                                    onChange={(e) => setFormData({ ...formData, discountPrice: e.target.value })}
-                                    className="w-full rounded-lg border border-[#E8DFD1] bg-[#FAF8F5] p-2.5 text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#8C1515]"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">Stock Quantity *</label>
-                                <input
-                                    type="number"
-                                    required
-                                    min="0"
-                                    placeholder="15"
-                                    value={formData.stock}
-                                    onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-                                    className="w-full rounded-lg border border-[#E8DFD1] bg-[#FAF8F5] p-2.5 text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#8C1515]"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Description */}
+                    {/* Price, Discount & Stock */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <div>
-                            <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">Description</label>
-                            <textarea
-                                rows="3"
-                                placeholder="Craftsmanship details..."
-                                value={formData.description}
-                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                className="w-full rounded-lg border border-[#E8DFD1] bg-[#FAF8F5] p-2.5 text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#8C1515]"
-                            />
-                        </div>
-
-                        {/* Image URL */}
-                        <div>
-                            <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">Image URL</label>
+                            <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
+                                Price ($) *
+                            </label>
                             <input
-                                type="url"
-                                placeholder="https://images.unsplash.com/..."
-                                value={formData.imageUrl}
-                                onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                                type="number"
+                                required
+                                min="0"
+                                placeholder="1200"
+                                value={formData.price}
+                                onChange={(e) => updateField('price', e.target.value)}
                                 className="w-full rounded-lg border border-[#E8DFD1] bg-[#FAF8F5] p-2.5 text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#8C1515]"
                             />
                         </div>
 
-                        {/* Sizes */}
                         <div>
-                            <label className="block text-xs font-semibold text-gray-700 uppercase mb-1.5">Available Sizes</label>
-                            <div className="flex flex-wrap gap-2">
-                                {AVAILABLE_SIZES.map((sz) => {
-                                    const isSelected = formData.sizes.includes(sz);
-                                    return (
-                                        <button
-                                            type="button"
-                                            key={sz}
-                                            onClick={() => handleSizeToggle(sz)}
-                                            className={`px-3 py-1 rounded-md text-xs font-semibold border transition-all ${isSelected
+                            <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
+                                Discount Price ($)
+                            </label>
+                            <input
+                                type="number"
+                                min="0"
+                                placeholder="950"
+                                value={formData.discountPrice}
+                                onChange={(e) => updateField('discountPrice', e.target.value)}
+                                className="w-full rounded-lg border border-[#E8DFD1] bg-[#FAF8F5] p-2.5 text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#8C1515]"
+                            />
+                        </div>
+
+                        <div>
+                            <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
+                                Stock Quantity *
+                            </label>
+                            <input
+                                type="number"
+                                required
+                                min="0"
+                                placeholder="15"
+                                value={formData.stock}
+                                onChange={(e) => updateField('stock', e.target.value)}
+                                className="w-full rounded-lg border border-[#E8DFD1] bg-[#FAF8F5] p-2.5 text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#8C1515]"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Description */}
+                    <div>
+                        <label className="block text-xs font-semibold text-gray-700 uppercase mb-1">
+                            Description *
+                        </label>
+                        <textarea
+                            rows="3"
+                            required
+                            placeholder="Craftsmanship details..."
+                            value={formData.description}
+                            onChange={(e) => updateField('description', e.target.value)}
+                            className="w-full rounded-lg border border-[#E8DFD1] bg-[#FAF8F5] p-2.5 text-sm text-gray-900 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#8C1515]"
+                        />
+                    </div>
+
+                    {/* Extracted Image Uploader */}
+                    <ProductImageUploader
+                        existingImages={existingImages}
+                        previews={previews}
+                        totalCount={totalImagesCount}
+                        onAddImages={addImages}
+                        onRemoveExisting={(index) => removeExistingImage(index)}
+                        onRemoveNew={removeNewImage}
+                    />
+
+                    {/* Sizes */}
+                    <div>
+                        <label className="block text-xs font-semibold text-gray-700 uppercase mb-1.5">
+                            Available Sizes
+                        </label>
+                        <div className="flex flex-wrap gap-2">
+                            {AVAILABLE_SIZES.map((sz) => {
+                                const isSelected = formData.sizes.includes(sz);
+                                return (
+                                    <button
+                                        type="button"
+                                        key={sz}
+                                        onClick={() => toggleSize(sz)}
+                                        className={`px-3 py-1 rounded-md text-xs font-semibold border transition-all ${
+                                            isSelected
                                                 ? 'bg-[#8C1515] text-white border-[#8C1515]'
                                                 : 'bg-[#FAF8F5] text-gray-600 border-[#E8DFD1] hover:border-gray-400'
-                                                }`}
-                                        >
-                                            {sz}
-                                        </button>
-                                    );
-                                })}
-                            </div>
+                                        }`}
+                                    >
+                                        {sz}
+                                    </button>
+                                );
+                            })}
                         </div>
+                    </div>
 
-                        {/* Featured Checkbox */}
-                        <div className="flex items-center gap-2 pt-1">
-                            <input
-                                type="checkbox"
-                                id="isFeatured"
-                                checked={formData.isFeatured}
-                                onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })}
-                                className="h-4 w-4 rounded text-[#8C1515] focus:ring-[#8C1515] border-[#E8DFD1]"
-                            />
-                            <label htmlFor="isFeatured" className="text-xs font-semibold text-gray-700 select-none">
-                                Mark as Featured Product
-                            </label>
-                        </div>
+                    {/* Featured Checkbox */}
+                    <div className="flex items-center gap-2 pt-1">
+                        <input
+                            type="checkbox"
+                            id="isFeatured"
+                            checked={formData.isFeatured}
+                            onChange={(e) => updateField('isFeatured', e.target.checked)}
+                            className="h-4 w-4 rounded text-[#8C1515] focus:ring-[#8C1515] border-[#E8DFD1]"
+                        />
+                        <label htmlFor="isFeatured" className="text-xs font-semibold text-gray-700 select-none">
+                            Mark as Featured Product
+                        </label>
+                    </div>
 
-                        {/* Form Action Buttons */}
-                        <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#E8DFD1]">
-                            <button
-                                type="button"
-                                onClick={onCLose}
-                                className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                type="submit"
-                                disabled={saving}
-                                className="rounded-lg bg-[#8C1515] px-5 py-2 text-sm font-semibold text-white hover:bg-[#701010] shadow-sm"
-                            >
-                                {saving && <Loader2 className="h-4 w-4 animate-spin" />}
-                                <span>{editingProduct ? 'Update Item' : 'Save Item'}</span>
-                            </button>
-                        </div>
-
-                    </form>
-                </div>
+                    {/* Actions */}
+                    <div className="flex items-center justify-end gap-3 pt-4 border-t border-[#E8DFD1]">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={saving}
+                            className="flex items-center gap-2 rounded-lg bg-[#8C1515] px-5 py-2 text-sm font-semibold text-white hover:bg-[#701010] shadow-sm disabled:opacity-60"
+                        >
+                            {saving && <Loader2 className="h-4 w-4 animate-spin" />}
+                            <span>{saving ? 'Uploading...' : editingProduct ? 'Update Item' : 'Save Item'}</span>
+                        </button>
+                    </div>
+                </form>
             </div>
+        </div>
         </>
     )
 }

@@ -45,7 +45,7 @@ const openEditProductModal = (product) => {
 
       <ProductModal
       isOpen={isAddModalOpen}
-      onCLose={closeModal}
+      onClose={closeModal}
       editingProduct={editingProduct}
       onSuccess={refetchHandler}
       />
