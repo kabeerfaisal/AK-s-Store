@@ -6,7 +6,7 @@ export const addToCart = async (req, res) => {
     try {
         let userId = req.user.id
 
-        const { productId, quantity = 1, selectedSize = '' } = req.body
+        let { productId, quantity = 1, selectedSize = '' } = req.body
 
         if (!userId || !productId) {
             return res.status(400).json({
@@ -102,6 +102,7 @@ export const addToCart = async (req, res) => {
         });
 
     } catch (error) {
+        console.log(error)
         return res.status(500).json({
             success: false,
             message: error.message,

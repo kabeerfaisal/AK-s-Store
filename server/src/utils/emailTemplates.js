@@ -68,14 +68,14 @@ export const orderInvoiceTemplate = (user, order) => {
 
     return renderLayout({
         subtitle: `Order Invoice #${shortId}`,
-        customerName: addr.fullName || user?.name,
+        customerName: address.fullName || user?.name,
         body: `
       <p style="${STYLES.text}">Your order has been placed successfully! Below is your official order invoice.</p>
       ${renderInfoCard({
             'Order ID': `#${shortId}`,
             'Order Date': orderDate,
             'Payment Method': order.paymentMethod || 'COD',
-            'Shipping Address': `${addr.streetAddress}, ${addr.city} (${addr.postalCode}) — ${addr.phone}`,
+            'Shipping Address': `${address.streetAddress}, ${address.city} (${address.postalCode}) — ${address.phone}`,
         })}
       <table style="${STYLES.table}">
         <thead>

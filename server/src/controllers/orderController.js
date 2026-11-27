@@ -121,6 +121,7 @@ export const createOrder = async (req, res) => {
         });
 
     } catch (error) {
+        console.log(error)
         res.status(500).json({
             success: false,
             message: "Server Error: Unable to place order.",
@@ -201,7 +202,7 @@ export const updateOrder = async (req, res) => {
     try {
         const orderStatus = req.body.orderStatus || req.body.status;
         const { paymentStatus } = req.body;
-        const order = await Order.findById(req.params.id);
+        const order = await Order.findById(req.params.id).populate('user', 'name fullname email');
 
         if (!order) {
             return res.status(404).json({
@@ -219,8 +220,10 @@ export const updateOrder = async (req, res) => {
             });
         }
 
+        let statusChanged = false
 
         if (orderStatus) {
+            statusChanged = true
             const newStatusLower = orderStatus.toLowerCase();
             order.orderStatus = orderStatus;
 

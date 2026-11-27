@@ -49,6 +49,7 @@ function AdminOrders() {
       if (res?.success) {
         const updatedObj = res.order || res.data?.order;
         setOrders(prev => prev.map(o => o._id === orderId ? { ...o, ...updatedObj, orderStatus: newStatus } : o));
+
       }
     } catch (error) {
       console.error("Error updating order status:", error);
