@@ -1,7 +1,7 @@
 import Cart from "../models/CartModel.js";
 import Order from "../models/orderModel.js";
 import Product from "../models/ProductModels.js";
-import { orderCancelledTemplate, orderInvoiceTemplate } from "../utils/emailTemplates.js";
+import { orderCancelledTemplate, orderInvoiceTemplate, orderStatusTemplate } from "../utils/emailTemplates.js";
 import { sendEmail } from "../utils/sendEmail.js";
 
 
@@ -220,11 +220,10 @@ export const updateOrder = async (req, res) => {
             });
         }
 
-        let statusChanged = false
+        const newStatusLower = orderStatus?.toLowerCase();
+        const statusChanged = Boolean(newStatusLower && newStatusLower !== currentStatus);
 
         if (orderStatus) {
-            statusChanged = true
-            const newStatusLower = orderStatus.toLowerCase();
             order.orderStatus = orderStatus;
 
             if (newStatusLower === "cancelled" && currentStatus !== "cancelled") {
@@ -258,7 +257,6 @@ export const updateOrder = async (req, res) => {
 
         if (statusChanged && recipientEmail) {
             const shortId = updatedOrder._id.toString().slice(-8).toUpperCase();
-            const newStatusLower = updatedOrder.orderStatus.toLowerCase();
 
             if (newStatusLower === "cancelled") {
                 sendEmail({
